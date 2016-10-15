@@ -1,0 +1,132 @@
+<div class="modal fade" id="createUserModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="panel panel-primary">
+          <div class="panel-heading">New User</div>
+          <div class="panel-body">
+            <form name="createUserForm" class="form-horizontal">
+              <section>
+                <div class="form-group">
+                  <label for="username" class="col-sm-3 control-label">User Name</label>
+                  <div class="col-sm-7">
+                    <input type="text" class="form-control" id="username" placeholder="User Name"
+                           ng-model='$ctrl.newUser.username'>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="password" class="col-sm-3 control-label">Password</label>
+                  <div class="col-sm-7">
+                    <input type="password" class="form-control" id="password" placeholder="Password"
+                           ng-model='$ctrl.newUser.password'>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="role" class="col-sm-3 control-label">Role</label>
+                  <div class="col-sm-7">
+                    <select class="form-control" id="userrole" ng-model='$ctrl.newUser.role'>
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+                </div>
+              </section>
+              <section class="model-btn">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click='$ctrl.addUser()'>Create</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              </section>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="changePwdModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="panel panel-primary">
+          <div class="panel-heading">Change Password</div>
+          <div class="panel-body">
+            <form name="createUserForm" class="form-horizontal">
+              <section ng-show="$ctrl.isAdmin() && !$ctrl.isMyself()">
+                <div class="form-group">
+                  <label for="password" class="col-sm-3 control-label">Password</label>
+                  <div class="col-sm-7">
+                    <input type="password" class="form-control" id="password" placeholder="Password"
+                           ng-model='$ctrl.newUser.password'>
+                  </div>
+                </div>
+              </section>
+              <section ng-hide="!$ctrl.isMyself()">
+                <div class="form-group">
+                  <label for="password" class="col-sm-4 control-label">Current Password</label>
+                  <div class="col-sm-7">
+                    <input type="password" class="form-control" required
+                           placeholder="Current Password" ng-model='$ctrl.pwdInfo.oldPwd'>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="password" class="col-sm-4 control-label">New Password</label>
+                  <div class="col-sm-7">
+                    <input type="password" class="form-control" required
+                           placeholder="New Password" ng-model='$ctrl.pwdInfo.newPwd'>
+                  </div>
+                </div>
+              </section>
+              <section class="model-btn">
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        ng-click='$ctrl.resetPwd()'>Change</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              </section>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id='opStatusModal' tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body ">
+        <div class="panel panel-danger">
+          <div class="panel-heading">{{$ctrl.failReason}}</div>
+          <div class="panel-body">
+            <section>{{$ctrl.failDetail}}</section>
+            <section class="model-btn">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row btn-bar" ng-show="$ctrl.isAdmin()">
+  <button id="add-user-btn" class="btn btn-default" 
+          ng-disabled="!$ctrl.isAdmin()" ng-class="{disabled : !$ctrl.isAdmin()}"
+          data-toggle="modal" data-target="#createUserModal">
+    Add User <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+  </button>
+</div>
+<div class="row" ng-init='$ctrl.init()'>
+  <table class="table table-hover result">
+    <tr>
+      <th>User name</th>
+      <th>Role</th>
+      <th></th>
+    </tr>
+    <tr ng-repeat="user in $ctrl.allUsers">
+      <td>{{user.username}}</td>
+      <td>{{user.role}}</td>
+      <td>
+        <button type="button" class="btn btn-default" ng-click="$ctrl.changePwd(user.username)"
+                data-toggle="modal" data-target="#changePwdModal">
+          <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+        </button>
+      </td>
+    </tr>
+  </table>
+</div>

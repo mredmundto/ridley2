@@ -1,0 +1,121 @@
+<div class="row">
+  <form name="searchForm">
+    <div class="container">
+      <div class="row">
+        <h3 class="col-md-1">Search</h3>
+        <select class="col-md-2 selectpicker" ng-model="$ctrl.criteria.searchBy" 
+                ng-model="$ctrl.criteria.searchBy" ng-change="$ctrl.resetValue()">
+          <option value="byName">with Name</option>
+          <option value="byScore">with Score</option>
+          <option value="byCertificate">with Certificate</option>
+          <option value="byAsc">is ASC Certified</option>
+          <option value="byCaptureMethod">with Capture Method</option>
+          <option value="byMaterial">with Product Type</option>
+        </select>
+        <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byName"'>
+          <div class="input-group">
+            <input type="text" class="form-control" ng-model="$ctrl.criteria.value"
+                   ng-keydown='$event.keyCode == 13 && $ctrl.search()' placeholder="List All">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="button" 
+                      ng-disabled='searchForm.$invalid' ng-click="$ctrl.findByName()">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byScore"'>
+          <select class="col-md-2 choices" ng-model="$ctrl.criteria.cmp">
+            <option value="eq">=</option>
+            <option value="gt">&gt;</option>
+            <option value="lt">&lt;</option>
+            <option value="gte">&gt;=</option>
+            <option value="lte">&lt;=</option>
+          </select>
+          <div class="input-group col-md-5">
+            <input type="text" class="form-control" ng-model="$ctrl.criteria.value">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="button" 
+                      ng-disabled='searchForm.$invalid' ng-click="$ctrl.findByScore()">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byCertificate"'>
+          <select class="col-md-2 choices" ng-model="$ctrl.criteria.value">
+            <option value="IFFO" selected>IFFO</option>
+            <option value="MSC">MSC</option>
+            <option value="GOVT">Gov&apos;t</option>
+            <option value="ASSESSMENT">Assessment</option>
+          </select>
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button" 
+                    ng-disabled='searchForm.$invalid' ng-click="$ctrl.findByCert()">
+              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            </button>
+          </span>
+        </div>
+        <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byAsc"'>
+          <select class="col-md-4 selectpicker">
+            <option value="ASC">ASC Certified</option>
+            <option value="non-ASC">Non ASC Certified</option>
+          </select>
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button" 
+                    ng-disabled='searchForm.$invalid' ng-click="$ctrl.search()">
+              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            </button>
+          </span>
+        </div>
+        <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byCaptureMethod"'>
+          <select class="col-md-4 selectpicker">
+            <option value="Wild Caught">Wild Caught</option>
+            <option value="Farmed">Farmed</option>
+            <option value="By Product">By Product</option>
+            <option value="Trimming">Trimming</option>
+          </select>
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button" 
+                    ng-disabled='searchForm.$invalid' ng-click="$ctrl.search()">
+              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            </button>
+          </span>
+        </div>
+        <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byMaterial"'>
+          <select class="col-md-8 selectpicker">
+            <option value="Fish Meal">Fish Meal</option>
+            <option value="Fish Oil">Fish Oil</option>
+            <option value="DFS (Dried Fish Soluble)">DFS (Dried Fish Soluble)</option>
+            <option value="Actipal HC6 (Krill hydrolysate Concentrate)">Actipal HC6 (Krill hydrolysate Concentrate)</option>
+            <option value="Olymarc">Olymarc</option>
+            <option value="HP2">HP2</option>
+            <option value="SL5">SL5</option>
+            <option value="SPC">SPC</option>
+          </select>
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button" 
+                    ng-disabled='searchForm.$invalid' ng-click="$ctrl.search()">
+              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="row">
+  <h3 ng-hide='$ctrl.suppliers.length > 0'>No results found.</h3>
+  <table class="table table-hover result" ng-show='$ctrl.suppliers.length > 0'>
+    <tr>
+      <th>Score</th>
+      <th>Company</th>
+    </tr>
+    <tr ng-repeat="supplier in $ctrl.suppliers">
+      <td>{{supplier.score}}</td>
+      <td>
+        <a ui-sref="home.supplierEdit({'supplierId' : '{{supplier._id}}'})">{{supplier.company}}</a>
+      </td>
+    </tr>
+  </table>
+</div>

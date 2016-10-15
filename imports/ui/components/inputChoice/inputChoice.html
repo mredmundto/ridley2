@@ -1,0 +1,13 @@
+<label class='control-label'>{{label}}</label>
+<div class="dropdown">
+  <button class="btn btn-default dropdown-toggle" type="button" ng-class="{disabled : readonly}"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    <span class="pull-left">{{model}}</span>
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-right">
+    <li ng-repeat="item in data">
+      <a href="#" ng-click="$ctrl.select(item)">{{item}}</a>
+    </li>
+  </ul>
+</div>

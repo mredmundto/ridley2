@@ -1,0 +1,281 @@
+<form name='editForm' class="container-fluid" ng-init="$ctrl.init()" novalidate>
+  <div class="row btn-bar">
+    <button class="btn btn-default col-md-1" ng-click="$ctrl.readonly = false;"
+            ng-disabled="!$ctrl.readonly" ng-class='{disabled : !$ctrl.readonly}'>
+      Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+    </button>
+    <button class="btn btn-default col-md-1" ng-click="$ctrl.readonly = false;" ng-hide="$ctrl.readonly">
+      Update <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+    </button>
+    <button class="btn btn-default col-md-1" ng-click="$ctrl.readonly = true;" ng-hide="$ctrl.readonly">
+      Cancel <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+    </button>
+  </div>
+  <fieldset>
+    <legend>Mandatory</legend>
+    <div class="row">
+      <input-text class='col-md-4 form-group' required='true' name="materials"
+                  label="Materials" placeholder="Materials"
+                  model="$ctrl.supplier.materials" field='editForm.materials'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='productCode'
+                  label='Product Code' placeholder='Product Code' 
+                  model="$ctrl.supplier.productCode" field='editForm.productCode'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='countryOfOrigin'
+                  label='Country Of Origin' placeholder='Country Of Origin'
+                  model="$ctrl.supplier.countryOfOrigin" field='editForm.countryOfOrigin'
+                  readonly='$ctrl.readonly'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' required='true' name='sanipesWebsite'
+                  label='SANIPES Website' placeholder='SANIPES Website'
+                  model="$ctrl.supplier.sanipesWebsite" field='editForm.sanipesWebsite'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name="company"
+                  label="Company / Supplier" placeholder="Company / Supplier" 
+                  model="$ctrl.supplier.company" field='editForm.company'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='companyWebsite'
+                  label='Company Website' placeholder='Company Website'
+                  model="$ctrl.supplier.companyWebsite" field='editForm.companyWebsite'
+                  readonly='$ctrl.readonly'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' required='true' name='companyCertificate'
+                  label='Company Certificates' placeholder='Company Certificates'
+                  model="$ctrl.supplier.companyCertificate" field='editForm.companyCertificate'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='fishSpecies'
+                  label='Fish Species' placeholder='Fish Species'
+                  model="$ctrl.supplier.fishSpecies" field='editForm.fishSpecies'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='iucnStatus'
+                  label='IUCN status' placeholder='IUCN status'
+                  model="$ctrl.supplier.iucnStatus" field='editForm.iucnStatus'
+                  readonly='$ctrl.readonly'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' required='true' name='speciesCertification'
+                  label='Species Certification' placeholder='Species Certification'
+                  model="$ctrl.supplier.speciesCertification" field='editForm.speciesCertification'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='certificatSupplied'
+                  label='Ridley Species Certificate Supplied' placeholder='Ridley Species Certificate Supplied'
+                  model="$ctrl.supplier.certificatSupplied" field='editForm.certificatSupplied'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='auditRecordSupplied'
+                  label='Ridley RS Audit Record Supplied' placeholder='Ridley RS Audit Record Supplied'
+                  model="$ctrl.supplier.auditRecordSupplied" field='editForm.auditRecordSupplied'
+                  readonly='$ctrl.readonly'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' required='true' name='qms'
+                  label='QMS' placeholder='QMS' 
+                  model="$ctrl.supplier.qms" field='editForm.qms' readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='govtManaged'
+                  label="Gov&apos;t Managed" placeholder="Gov&apos;t Managed"
+                  model='$ctrl.supplier.govtManaged' field="editForm.govtManaged"
+                  readonly='$ctrl.readonly'></input-text>
+      <input-choice class='col-md-4 form-group' label="Certificate" model='$ctrl.supplier.certType'
+                    data="['IFFO', 'MSC', 'ASC', 'RTRS']" readonly='$ctrl.readonly'></input-choice>
+<!--      <input-select class='col-md-4 form-group' name='certType' label="Certificate"
+                    data="['IFFO', 'MSC', 'ASC', 'RTRS']"
+                    model='$ctrl.supplier.certType' field="editForm.certType"></input-select>-->
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' required='true' name='supplierSite'
+                  label='Supplier site' placeholder='Supplier site'
+                  model="$ctrl.supplier.supplierSite" field='editForm.supplierSite'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='expiryDates'
+                  label='MSC/IFFO/ASC/RTRS Expiry Dates' placeholder='MSC/IFFO/ASC/RTRS Expiry Dates'
+                  model="$ctrl.supplier.expiryDates" field='editForm.expiryDates'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='link'
+                  label='Link (IFFO/MSC/ASC/RTRS websites)' placeholder='Link (IFFO/MSC/ASC/RTRS websites)'
+                  model="$ctrl.supplier.link" field='editForm.link'
+                  readonly='$ctrl.readonly'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' required='true' name='faoArea'
+                  label='FAO area / CCAMLR area' placeholder='FAO area / CCAMLR area'
+                  model="$ctrl.supplier.faoArea" field='editForm.faoArea'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='faoDesc'
+                  label='FAO Description of Location' placeholder='FAO Description of Location'
+                  model="$ctrl.supplier.faoDesc" field='editForm.faoDesc'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='faoLink'
+                  label='FAO Link' placeholder='FAO Link'
+                  model="$ctrl.supplier.faoLink" field='editForm.faoLink'
+                  readonly='$ctrl.readonly'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' required='true' name='catchMethod'
+                  label='Catching Method' placeholder='Catching Method'
+                  model="$ctrl.supplier.catchMethod" field='editForm.catchMethod'
+                  readonly='$ctrl.readonly'></input-text>
+    </div>
+  </fieldset>  
+<!--  <fieldset class="hide">
+    <legend>Optional</legend>
+    <div class="row">  
+      <input-text class='col-md-4 form-group' name='BAP'
+                  label='BAP' placeholder='BAP'
+                  model='ctrl.supplier.BAP' field='editForm.BAP'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' name='BASC'
+                  label='BASC (Business Alliance for Secure Commerce)' placeholder='BASC (Business Alliance for Secure Commerce)'
+                  model='ctrl.supplier.BASC' field='editForm.BASC'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' name='BSE'
+                  label='BSE Free Certificate' placeholder='BSE Free Certificate'
+                  model='ctrl.supplier.BSE' field='editForm.BSE'
+                  readonly='$ctrl.readonly'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' name='CCAMlR'
+                  label='CCAMLR Commission for the Conservation of Antarctic Marine Living Resources' placeholder='CCAMLR Commission for the Conservation of Antarctic Marine Living Resources'
+                  model='ctrl.supplier.CCAMlR' field='editForm.CCAMlR'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' name='custodyDoc'
+                  label='Chain of Custody documents' placeholder='Chain of Custody documents'
+                  model='ctrl.supplier.custodyDoc' field='editForm.custodyDoc'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' name='CoA'
+                  label='CoA&apos;s' placeholder='CoA&apos;s'
+                  model='ctrl.supplier.CoA' field='editForm.CoA'
+                  readonly='$ctrl.readonly'></input-text>,
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' name='Debio'
+                  label='Debio (organic)' placeholder='Debio (organic)'
+                  model='ctrl.supplier.Debio' field='editForm.Debio'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' name='Dolphin'
+                  label='Dolphin Safe' placeholder='Dolphin Safe'
+                  model='ctrl.supplier.Dolphin' field='editForm.Dolphin'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' name='FEMAS'
+                  label='FEMAS	Friends of the Sea' placeholder='FEMAS	Friends of the Sea'
+                  model='ctrl.supplier.FEMAS' field='editForm.FEMAS'
+                  readonly='$ctrl.readonly'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' name='GMP'
+                  label='GMP' placeholder='GMP'
+                  model='ctrl.supplier.GMP' field='editForm.GMP'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' name='HACCP'
+                  label='HACCP' placeholder='HACCP'
+                  model='ctrl.supplier.HACCP' field='editForm.HACCP'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' name='ISO14000'
+                  label='ISO 14000' placeholder='ISO 14000'
+                  model='ctrl.supplier.ISO14000' field='editForm.ISO14000'
+                  readonly='$ctrl.readonly'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' name='ISO9001'
+                  label='ISO 9001:2008' placeholder='ISO 9001:2008'
+                  model='ctrl.supplier.ISO9001' field='editForm.ISO9001'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' name='ISO22000'
+                  label='ISO 22000:2005' placeholder='ISO 22000:2005'
+                  model='ctrl.supplier.ISO22000' field='editForm.ISO22000'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' name='IUCN'
+                  label='IUCN' placeholder='IUCN'
+                  model='ctrl.supplier.IUCN' field='editForm.IUCN'
+                  readonly='$ctrl.readonly'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' name='IUU'
+                  label='IUU' placeholder='IUU'
+                  model='ctrl.supplier.IUU' field='editForm.IUU'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' name='ManufacturersDecl'
+                  label='Manufacturers Declaration' placeholder='Manufacturers Declaration'
+                  model='ctrl.supplier.ManufacturersDecl' field='editForm.ManufacturersDecl'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' name='Naturland'
+                  label='Naturland' placeholder='Naturland'
+                  model='ctrl.supplier.Naturland' field='editForm.Naturland'
+                  readonly='$ctrl.readonly'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' name='NOFIMA'
+                  label='NOFIMA' placeholder='NOFIMA'
+                  model='ctrl.supplier.NOFIMA' field='editForm.NOFIMA'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' name='QMS'
+                  label='QMS' placeholder='QMS'
+                  model='ctrl.supplier.QMS' field='editForm.QMS'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' name='WWF'
+                  label='WWF' placeholder='WWF'
+                  model='ctrl.supplier.WWF' field='editForm.WWF'
+                  readonly='$ctrl.readonly'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' name='byProductProcess'
+                  label='By product of processing' placeholder='By product of processing'
+                  model='ctrl.supplier.byProductProcess' field='editForm.byProductProcess'
+                  readonly='$ctrl.readonly'></input-text>
+      <input-text class='col-md-4 form-group' name='AgreeGGAP'
+                  label='Agree G GAP covered' placeholder='Agree G GAP covered'
+                  model='ctrl.supplier.AgreeGGAP' field='editForm.AgreeGGAP'
+                  readonly='$ctrl.readonly'></input-text>
+    </div>
+  </fieldset>-->
+  <fieldset>
+    <legend class="margin-bottom-5px">Additional Certificates</legend>
+    <table id="certificate-table" class="table table-hover">
+      <tr ng-repeat="item in $ctrl.level4Certs">
+        <td>{{item.cert}}</td>
+        <td>{{item.info}}</td>
+        <td>
+          <button type="button" class="btn btn-default" ng-click="$ctrl.removeExtraCertificate($index)">
+            <span class="glyphicon glyphicon-minus"></span>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <select ng-model="$ctrl.extraCert">
+            <option value="ISO 9001">ISO 9001 certification</option>
+            <option value="ISO 14000">ISO 14000 certification</option>
+            <option value="ISO 18000">ISO 18000 certification</option>
+            <option value="ISO 22000">ISO 22000 certification</option>
+            <option value="CCAMLR">CCAMLR certification</option>
+            <option value="BAP">BAP certification</option>
+            <option value="Global G.A.P.">Global G.A.P. certification</option>
+            <option value="HACCP">HACCP certification</option>
+            <option value="GMP">GMP certification</option>
+            <option value="WWF">WWF certification</option>
+            <option value="NOFIMA certification">NOFIMA certification</option>
+            <option value="Debio Organic certification">Debio Organic certification</option>
+            <option value="Dolphin Safe certification">Dolphin Safe certification</option>
+            <option value="FEMAS">FEMAS certification</option>
+            <option value="Friends of the Sea">Friends of the Sea certification</option>
+            <option value="Naturland organic">Naturland organic certification</option>
+            <option value="BASC">BASC certification</option>
+            <option value="BSE Free">BSE Free Certificate</option>
+            <option value="MSC CoC">MSC CoC Certification</option>
+          </select>
+        </td>
+        <td>
+          <input type="text" ng-model="$ctrl.extraCertInfo" class="form-control" 
+                 placeholder="Information" readonly='$ctrl.readonly'>
+        </td>
+        <td>
+          <button type="button" class="btn btn-default" ng-click="$ctrl.addExtraCertificate()"
+                  ng-hide='$ctrl.readonly'>
+            <span class="glyphicon glyphicon-plus"></span>
+          </button>
+        </td>
+      </tr>
+    </table>
+  </fieldset>
+</form>

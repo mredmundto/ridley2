@@ -1,0 +1,230 @@
+<form name='createForm' class="container-fluid" novalidate>
+  <div class="row btn-bar">
+    <button class="btn btn-default col-md-1" ng-click="$ctrl.submit()" ng-disabled="createForm.$invalid">
+      Submit <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+    </button>
+    <label class="btn btn-default col-md-1">
+      Upload <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
+      <input type="file" upload-begin handler="$ctrl.upload(file)"/>
+    </label>
+  </div>
+  <fieldset>
+    <legend>Mandatory</legend>
+    <div class="row">
+      <input-text class='col-md-4 form-group' required='true' name="materials" 
+                  label="Materials" placeholder="Materials" 
+                  model="$ctrl.supplier.materials" field='createForm.materials'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='productCode'
+                  label='Product Code' placeholder='Product Code' 
+                  model="$ctrl.supplier.productCode" field='createForm.productCode'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='countryOfOrigin'
+                  label='Country Of Origin' placeholder='Country Of Origin'
+                  model="$ctrl.supplier.countryOfOrigin" field='createForm.countryOfOrigin'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' required='true' name='sanipesWebsite'
+                  label='SANIPES Website' placeholder='SANIPES Website'
+                  model="$ctrl.supplier.sanipesWebsite" field='createForm.sanipesWebsite'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name="company"
+                  label="Company / Supplier" placeholder="Company / Supplier" 
+                  model="$ctrl.supplier.company" field='createForm.company'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='companyWebsite'
+                  label='Company Website' placeholder='Company Website'
+                  model="$ctrl.supplier.companyWebsite" field='createForm.companyWebsite'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' required='true' name='companyCertificate'
+                  label='Company Certificates' placeholder='Company Certificates'
+                  model="$ctrl.supplier.companyCertificate" field='createForm.companyCertificate'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='fishSpecies'
+                  label='Fish Species' placeholder='Fish Species'
+                  model="$ctrl.supplier.fishSpecies" field='createForm.fishSpecies'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='iucnStatus'
+                  label='IUCN status' placeholder='IUCN status'
+                  model="$ctrl.supplier.iucnStatus" field='createForm.iucnStatus'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' required='true' name='speciesCertification'
+                  label='Species Certification' placeholder='Species Certification'
+                  model="$ctrl.supplier.speciesCertification" field='createForm.speciesCertification'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='certificatSupplied'
+                  label='Ridley Species Certificate Supplied' placeholder='Ridley Species Certificate Supplied'
+                  model="$ctrl.supplier.certificatSupplied" field='createForm.certificatSupplied'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='auditRecordSupplied'
+                  label='Ridley RS Audit Record Supplied' placeholder='Ridley RS Audit Record Supplied'
+                  model="$ctrl.supplier.auditRecordSupplied" field='createForm.auditRecordSupplied'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' required='true' name='qms'
+                  label='QMS' placeholder='QMS' 
+                  model="$ctrl.supplier.qms" field='createForm.qms'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='govtManaged'
+                  label="Gov&apos;t Managed" placeholder="Gov&apos;t Managed"
+                  model='$ctrl.supplier.govtManaged' field="createForm.govtManaged"></input-text>
+      <input-choice class='col-md-4 form-group' label="Certificate" model='$ctrl.supplier.certType'
+                    data="['IFFO', 'MSC', 'ASC', 'RTRS']"></input-choice>
+<!--      <input-select class='col-md-4 form-group' name='certType' label="Certificate"
+                    data="['IFFO', 'MSC', 'ASC', 'RTRS']"
+                    model='$ctrl.supplier.certType' field="createForm.certType"></input-select>-->
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' required='true' name='supplierSite'
+                  label='Supplier site' placeholder='Supplier site'
+                  model="$ctrl.supplier.supplierSite" field='createForm.supplierSite'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='expiryDates'
+                  label='MSC/IFFO/ASC/RTRS Expiry Dates' placeholder='MSC/IFFO/ASC/RTRS Expiry Dates'
+                  model="$ctrl.supplier.expiryDates" field='createForm.expiryDates'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='link'
+                  label='Link (IFFO/MSC/ASC/RTRS websites)' placeholder='Link (IFFO/MSC/ASC/RTRS websites)'
+                  model="$ctrl.supplier.link" field='createForm.link'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' required='true' name='faoArea'
+                  label='FAO area / CCAMLR area' placeholder='FAO area / CCAMLR area'
+                  model="$ctrl.supplier.faoArea" field='createForm.faoArea'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='faoDesc'
+                  label='FAO Description of Location' placeholder='FAO Description of Location'
+                  model="$ctrl.supplier.faoDesc" field='createForm.faoDesc'></input-text>
+      <input-text class='col-md-4 form-group' required='true' name='faoLink'
+                  label='FAO Link' placeholder='FAO Link'
+                  model="$ctrl.supplier.faoLink" field='createForm.faoLink'></input-text>
+    </div>
+    <div class="row">
+      <input-text class='col-md-4 form-group' required='true' name='catchMethod'
+                  label='Catching Method' placeholder='Catching Method'
+                  model="$ctrl.supplier.catchMethod" field='createForm.catchMethod'></input-text>
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend class="margin-bottom-5px">Additional Certificates</legend>
+    <table id="certificate-table" class="table table-hover">
+      <tr ng-repeat="item in $ctrl.level4Certs">
+        <td>{{item.cert}}</td>
+        <td>{{item.info}}</td>
+        <td>
+          <button type="button" class="btn btn-default" ng-click="$ctrl.removeExtraCertificate($index)">
+            <span class="glyphicon glyphicon-minus"></span>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <select ng-model="$ctrl.extraCert">
+            <option value="ISO 9001">ISO 9001 certification</option>
+            <option value="ISO 14000">ISO 14000 certification</option>
+            <option value="ISO 18000">ISO 18000 certification</option>
+            <option value="ISO 22000">ISO 22000 certification</option>
+            <option value="CCAMLR">CCAMLR certification</option>
+            <option value="BAP">BAP certification</option>
+            <option value="Global G.A.P.">Global G.A.P. certification</option>
+            <option value="HACCP">HACCP certification</option>
+            <option value="GMP">GMP certification</option>
+            <option value="WWF">WWF certification</option>
+            <option value="NOFIMA certification">NOFIMA certification</option>
+            <option value="Debio Organic certification">Debio Organic certification</option>
+            <option value="Dolphin Safe certification">Dolphin Safe certification</option>
+            <option value="FEMAS">FEMAS certification</option>
+            <option value="Friends of the Sea">Friends of the Sea certification</option>
+            <option value="Naturland organic">Naturland organic certification</option>
+            <option value="BASC">BASC certification</option>
+            <option value="BSE Free">BSE Free Certificate</option>
+            <option value="MSC CoC">MSC CoC Certification</option>
+          </select>
+        </td>
+        <td>
+          <input type="text" ng-model="$ctrl.extraCertInfo" class="form-control" placeholder="Information">
+        </td>
+        <td>
+          <button type="button" class="btn btn-default" ng-click="$ctrl.addExtraCertificate()">
+            <span class="glyphicon glyphicon-plus"></span>
+          </button>
+        </td>
+      </tr>
+    </table>
+  </fieldset>
+  <fieldset>
+    <legend class="margin-bottom-5px">Extra Information (Section 1)</legend>
+    <table id="extra-info-section-1" class="table table-hover">
+      <tr ng-repeat="item in $ctrl.extraInfo1">
+        <td>{{item.cert}}</td>
+        <td>{{item.info}}</td>
+        <td>
+          <!--<button type="button" class="btn btn-default" ng-click="$ctrl.removeExtraCertificate($index)">-->
+          <button type="button" class="btn btn-default" ng-click="">
+            <span class="glyphicon glyphicon-minus"></span>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <select ng-model="$ctrl.newExtraInfo1">
+            <option value="1">Species are advised on shipping paperwork</option>
+            <option value="2">CoA's provided with each shipment</option>
+            <option value="3">CoA's are from 3rd party testing</option>
+            <option value="4">Antioxidant added</option>
+            <option value="5">IUCN declaration</option>
+            <option value="6">IUU declaration</option>
+            <option value="7">Declaration stating exclusion of slave/child labour/contravene of human rights</option>
+            <option value="8">Supplier have 3rd party verification of compliance to human rights declaration</option>
+            <option value="9">Manufacturers Declaration statements required for export to NZ in shipping docs</option>
+            <option value="10">Import statements are in shipping docs</option>
+            <option value="11">Ruminant statement requirements are in shipping docs</option>
+            <option value="12">By product/Trimmings of processing</option>
+            <option value="13">Percentage of By product/Trimmings</option>
+            <option value="14">Farmed material</option>
+            <option value="15">Salmonella Testing stated</option>
+            <option value="16">Shigella testing stated</option>
+            <option value="17">BSE Free Certificate</option>
+            <option value="18">If materials are treated with chemicals or pesticides this is noted in paperwork</option>
+          </select>
+        </td>
+        <td>
+          <input type="text" ng-model="$ctrl.newExtraInfo1Data" class="form-control fill" placeholder="Information">
+        </td>
+        <td>
+          <!--<button type="button" class="btn btn-default" ng-click="$ctrl.addExtraCertificate()">-->
+          <button type="button" class="btn btn-default" ng-click="">
+            <span class="glyphicon glyphicon-plus"></span>
+          </button>
+        </td>
+      </tr>
+    </table>
+  </fieldset>
+  <fieldset>
+    <legend class="margin-bottom-5px">Extra Information (Section 2)</legend>
+    <table id="extra-info-section-2" class="table table-hover">
+      <tr ng-repeat="item in $ctrl.extraInfo2">
+        <td>{{item.cert}}</td>
+        <td>{{item.info}}</td>
+        <td>
+          <!--<button type="button" class="btn btn-default" ng-click="$ctrl.removeExtraCertificate($index)">-->
+          <button type="button" class="btn btn-default" ng-click="">
+            <span class="glyphicon glyphicon-minus"></span>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <select ng-model="$ctrl.newExtraInfo2">
+            <option value="1">Evidence of traceability back to fishery/vessels</option>
+            <option value="2">Product Specifications supplied</option>
+            <option value="3">Pre-shipment samples sent to Ridley</option>
+            <option value="4">Batch samples arrive with goods</option>
+            <option value="5">&lt;1 NCR in 12 months related to products</option>
+            <option value="6">&lt;1 NCR in 12 months related to delivery</option>
+            <option value="7">&lt;1 DAWR Issue in previous 12 months customs/import</option>
+          </select>
+        </td>
+        <td>
+          <input type="text" ng-model="$ctrl.newExtraInfo2Data" class="form-control" placeholder="Information">
+        </td>
+        <td>
+          <!--<button type="button" class="btn btn-default" ng-click="$ctrl.addExtraCertificate()">-->
+          <button type="button" class="btn btn-default" ng-click="">
+            <span class="glyphicon glyphicon-plus"></span>
+          </button>
+        </td>
+      </tr>
+    </table>
+  </fieldset>
+</form>
