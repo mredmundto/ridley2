@@ -1,7 +1,6 @@
 import angular from 'angular';
 import angularMeteor from 'angular-meteor';
 import templateUrl from './supplierFind.html';
-//import { Suppliers } from '../../../api/suppliers';
 
 class SearchCtrl
 {
@@ -29,7 +28,33 @@ class SearchCtrl
   }
 
   resetValue() {
-    this.criteria.value = '';
+    switch (this.criteria.searchBy) {
+      case 'byCertificate' : {
+        this.criteria.value = 'IFFO';
+        break;
+      }
+      
+      case "byAsc" : {
+        this.criteria.value = 'ASC';
+        break;
+      }
+      
+      case "byCaptureMethod" : {
+        this.criteria.value = 'Wild Caught';
+        break;
+      }
+      
+      case "byMaterial" : {
+        this.criteria.value = 'Fish Meal';
+        break;
+      }
+      
+      default : {
+        this.criteria.value = '';
+        this.criteria.cmp   = 'gt';
+        break;
+      }
+    }
   }
 
   findByName() {
@@ -70,9 +95,6 @@ export default angular
     restrict: 'E',
     templateUrl,
     controller : SearchCtrl,
-    controllerAs : '$ctrl',
-    compile : function(element) {
-      $(element).find('.selectpicker').selectpicker();
-    }
+    controllerAs : '$ctrl'
   }
 });

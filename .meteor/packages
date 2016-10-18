@@ -20,7 +20,6 @@ angular-templates
 pbastowski:angular-babel
 twbs:bootstrap
 less@2.7.5_1
-kookoskar:bootstrap-select
 huaming:js-xlsx
 emdagon:c3js
 accounts-password@1.3.0

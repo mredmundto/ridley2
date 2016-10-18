@@ -21,9 +21,15 @@ export default angular.module(
       placeholder : '@',
       action : "&?"
     },
-    controller : ($scope) => {
+    controller : ($scope, $window) => {
       $scope.urlSetter = (url) => {
         $scope.urlModel = url;
+      }
+      
+      $scope.gotoLink = () => {
+        if ($scope.urlModel) {
+          $window.open($scope.urlModel, '_blank');
+        }
       }
     },
     link : function(scope, iElem, iAttrs) {

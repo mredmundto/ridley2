@@ -4,22 +4,42 @@ import { Suppliers } from './collection';
 
 function calculateScore(supplier) {
   var score = 0;
-  switch (supplier['certType'])
+  for (let i=0; i < supplier.sites.length; i++)
   {
-    case 'IFFO' : case 'MSC' :
-    case 'ASC' : case 'RTRS' :
+    let site = supplier.sites[i];
+    switch (site.certType)
     {
-      score = 70;
-      break;
+      case 'IFFO' : case 'MSC' :
+      case 'ASC' : case 'RTRS' :
+      {
+        score = 70;
+        break;
+      }
+      
+      default : {
+        if (site.govtManaged) {
+          score = 60;
+        }
+        break;
+      }
     }
+  
+    let extraCertScore = site.extraCerts.length;
+    extraCertScore = (extraCertScore < 6) ? extraCertScore : 5;
+    score += extraCertScore;
+    site['score'] = score;
   }
-  return score;
 }
 
-
 function addSupplier(supplier) {
-  supplier["score"] = calculateScore(supplier);
+  calculateScore(supplier);
   return Suppliers.insert(supplier);
+}
+
+function uploadSuppliers(records) {
+  for (let i=0; i < records.length; i++) {
+    addSupplier(records[i]);
+  }
 }
 
 function findSuppliersByName(name) {
@@ -39,23 +59,23 @@ function findSuppliersByScore(op, value) {
   else {
     switch (op) {
       case 'gt' : {
-        return Suppliers.find({'score' : {$gt : parseInt(value)}}).fetch();
+        return Suppliers.find({'sites.score' : {$gt : parseInt(value)}}).fetch();
       }
       
       case 'lt' : {
-        return Suppliers.find({'score' : {$lt : parseInt(value)}}).fetch();
+        return Suppliers.find({'sites.score' : {$lt : parseInt(value)}}).fetch();
       }
       
       case 'eq' : {
-        return Suppliers.find({'score' : {$eq : parseInt(value)}}).fetch();
+        return Suppliers.find({'sites.score' : {$eq : parseInt(value)}}).fetch();
       }
       
       case 'gte' : {
-        return Suppliers.find({'score' : {$gte : parseInt(value)}}).fetch();
+        return Suppliers.find({'sites.score' : {$gte : parseInt(value)}}).fetch();
       }
       
       case 'lte' : {
-        return Suppliers.find({'score' : {$lte : parseInt(value)}}).fetch();
+        return Suppliers.find({'sites.score' : {$lte : parseInt(value)}}).fetch();
       }
     }
   }
@@ -212,13 +232,13 @@ function catchMethodStats() {
 
 if (Meteor.isServer) {
   Meteor.methods({
-    scoreStats, certStats, ascStats, catchMethodStats
+    scoreStats, certStats, ascStats, catchMethodStats, 
+    addSupplier, uploadSuppliers
   });
 }
 
 Meteor.methods({
-  addSupplier, getSupplier,
-  findSuppliersByName, findSuppliersByScore,
+  getSupplier, findSuppliersByName, findSuppliersByScore,
   findSuppliersByCertificate, findSuppliersByAsc,
   findSuppliersByCaptureMethod, findSuppliersByMaterial
 });

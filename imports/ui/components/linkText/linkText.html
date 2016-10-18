@@ -6,8 +6,13 @@
            class='form-control' ng-required='required' ng-readonly='readonly'>
     <input type='hidden' id='{{name}}Url' name='{{name}}Url' ng-model="urlModel">
     <span class="input-group-btn">
-      <button class="btn btn-default" type="button" ng-click="action({callback : urlSetter})">
+      <button class="btn btn-default" type="button" ng-hide="readonly"
+              ng-click="action({callback : urlSetter})">
         <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
+      </button>
+      <button class="btn btn-default" type="button" title="Open Link"
+              ng-hide="!readonly" ng-click="gotoLink()" ng-disabled="!urlModel">
+        <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
       </button>
     </span>
   </div>

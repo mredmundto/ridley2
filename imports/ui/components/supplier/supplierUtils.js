@@ -217,32 +217,59 @@ export const SupplierUtils =
       else {
         let score = value[0]
         if (score.length !== text.length) {
+          let cmp = text.substring(0, text.length - score.length).trim();
+          switch (cmp) {
+            case '>' : {
+              cmp = 'gt';
+              break;
+            }
+            
+            case '<' : {
+              cmp = 'lt';
+              break;
+            }
+            
+            case '≥' : {
+              cmp = 'gte';
+              break;
+            }
+            
+            case '≤' : {
+              cmp = 'lte';
+              break;
+            }
+            
+            default : {
+              cmp = 'eq';
+              break;
+            }
+          }
+          
           return {
-            'cmp'   : text.substring(0, text.length - score.length),
-            'score' : parseInt(score)
+            'cmp' : cmp, 'score' : parseInt(score)
           };
         }
         else {
-          return {'cmp' : '=', 'score' : parseInt(score)};
+          return {'cmp' : 'eq', 'score' : parseInt(score)};
         }
       }
     }
     else {
-      return {'cmp' : '=', 'score' : text};
+      return {'cmp' : 'eq', 'score' : text};
     }
   },
   
   parseLink : (field, text) => {
     var values = text.split("\r\n");
     if (values.length === 1) {
-      return text;
+      return {
+        'text' : values[0], 'url' : ''
+      };
     }
     else {
-      let fieldUrl = field + "Url";
-      let linkObj  = {};
-      linkObj[field]    = values[0];
-      linkObj[fieldUrl] = values[1];
-      return linkObj;
+      return {
+        'text' : values[0], 'url' : values[1]
+      };
     }
   }
 }

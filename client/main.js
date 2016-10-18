@@ -76,12 +76,12 @@ angular.module('score-card', [
 .run(['$state', '$rootScope', function($state, $rootScope) {
   $rootScope.$on('$stateChangeStart', 
     function(event, toState, toParams, fromState, fromParams, options) {
-//      if (toState.name !== 'login' && Meteor.user() == null) {
-//        event.preventDefault();
-//        $state.transitionTo('login');
-//      }
-//      else if (toState.name === 'home.supplierEdit' && toParams.supplierId == undefined) {
-//        $state.transitionTo('home.graph');
-//      }
+      if (toState.name !== 'login' && Meteor.user() == null) {
+        event.preventDefault();
+        $state.transitionTo('login');
+      }
+      else if (toState.name === 'home.supplierEdit' && toParams.supplierId == undefined) {
+        $state.transitionTo('home.graph');
+      }
     });
 }]);

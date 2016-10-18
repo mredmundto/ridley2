@@ -3,7 +3,6 @@ import angularMeteor from 'angular-meteor';
 import templateUrl from './supplierAdd.html';
 
 import { SupplierUtils } from '../supplier/supplierUtils.js';
-import { Suppliers } from '../../../api/suppliers';
 import { name as uploadBegin } from '../uploadBegin/uploadBegin';
 import { name as linkText } from '../linkText/linkText';
 import { name as linkModal } from '../linkText/linkModal';
@@ -93,34 +92,47 @@ class ExcelParser
             else if (SupplierUtils.extraCertIdx(label) > -1) {
               if (value) {
                 let cert = {};
-                if (typeof value === 'string' && value.length > 0) {                  
-                  cert[label] = value;
-                } else {
-                  cert[label] = value;
+                if (typeof value === 'string') {
+                  if (value.length > 0) {              
+                    cert = {cert : label, info : value}
+                    site.extraCerts.push(cert);
+                  }
+                } 
+                else {
+                  cert = {cert : label, info : value}
+                  site.extraCerts.push(cert);
                 }
-                site.extraCerts.push(cert);
               }
             }
             else if (SupplierUtils.extraData1Idx(label) > -1) {
               if (value) {
                 let xData = {};
-                if (typeof value === 'string' && value.length > 0) {                  
-                  xData[label] = value;
-                } else {
-                  xData[label] = value;
+                if (typeof value === 'string') {
+                  if (value.length > 0) {
+                    xData = {criterion : label, info : value}
+                    site.extraData1.push(xData);
+                  }
+                } 
+                else {
+                  xData = {criterion : label, info : value}
+                  site.extraData1.push(xData);
                 }
-                site.extraData1.push(xData);
+                
               }
             }
             else if (SupplierUtils.extraData2Idx(label) > -1) {
               if (value) {
                 let xData = {};
-                if (typeof value === 'string' && value.length > 0) {                  
-                  xData[label] = value;
-                } else {
-                  xData[label] = value;
+                if (typeof value === 'string') {
+                  if (value.length > 0) {
+                    xData = {criterion : label, info : value}
+                    site.extraData2.push(xData);
+                  }
                 }
-                site.extraData2.push(xData);
+                else {
+                  xData = {criterion : label, info : value}
+                  site.extraData2.push(xData);
+                }   
               }
             }
             else {
@@ -146,11 +158,11 @@ class ExcelParser
         }
         supplier.sites.push(site);
         
+        let result = []
         Object.keys(records).forEach((key, idx) => {
-          console.log(key + " =>");
-          console.log(JSON.stringify(records[key]));
+          result.push(records[key]);
         });
-//        cb(entries[0]);
+        cb(result);
       };
       reader.readAsBinaryString(file);
     }
@@ -159,7 +171,7 @@ class ExcelParser
 
 class AddSupplierCtrl
 {
-  constructor($scope, ExcelParser) {
+  constructor($scope, $reactive, ExcelParser) {
     'ngInject';
     $scope.score_pattern = '\\d+(\\.\\d+)?'
     
@@ -169,8 +181,7 @@ class AddSupplierCtrl
     this.addingSite     = false;
     this.newSiteName    = '';
     this.urlSetter      = null;
-    this.newLinkUrl     = '';
-    
+
     this.extraCert      = "ISO 9001";
     this.extraCertInfo  = "";
     this.extraData1     = "1";
@@ -178,6 +189,7 @@ class AddSupplierCtrl
     this.extraData2     = "1";
     this.extraData2Info = "";
     this.supplier = SupplierUtils.createSupplier();
+    $reactive(this).attach($scope);
   }
   
   openLinkModal(cb) {
@@ -242,9 +254,15 @@ class AddSupplierCtrl
   }
   
   upload(file) {
-    this.ExcelParser.parse(file, this.fieldMap, (value) => {
-      this.supplier = value;
-      this._scope.$digest();
+    this.ExcelParser.parse(file, this.fieldMap, (records) => {
+      angular.element('#progress-modal').modal('show');
+      Meteor.call('uploadSuppliers', records, (error, result) =>
+      {
+        if (error) {
+          console.log(error);
+        }
+        angular.element('#progress-modal').modal('hide');
+      })
     })
   }
   

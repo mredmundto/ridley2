@@ -1,3 +1,21 @@
+<div class="modal fade" id="progress-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="panel panel-primary">
+          <div class="panel-heading">Uploading Data</div>
+          <div class="panel-body">
+            <div class="progress progress-striped active">
+              <div class="progress-bar"  role="progressbar" aria-valuenow="100" 
+                   aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <link-modal model="$ctrl.newLinkUrl" action="$ctrl.linkToUrl()"></link-modal>
 <form name='createForm' class="container-fluid" novalidate>
   <div class="row btn-bar extra-bottom-padding">
@@ -14,11 +32,11 @@
                 label="Company / Supplier" placeholder="Company / Supplier" 
                 model="$ctrl.supplier.company" field='createForm.company'></input-text>
     <link-text class='col-md-4 form-group' name='companyWebsite'
-                label='Company Website' placeholder='Company Website'
-                txt-model="$ctrl.supplier.companyWebsite.text"
-                url-model="$ctrl.supplier.companyWebsite.url"
-                field='createForm.companyWebsite'
-                action="$ctrl.openLinkModal(callback)"></link-text>
+               label='Company Website' placeholder='Company Website'
+               txt-model="$ctrl.supplier.companyWebsite.text"
+               url-model="$ctrl.supplier.companyWebsite.url"
+               field='createForm.companyWebsite'
+               action="$ctrl.openLinkModal(callback)"></link-text>
     <input-text class='col-md-4 form-group' name='companyCertificate'
                 label='Company Certificates' placeholder='Company Certificates'
                 model="$ctrl.supplier.companyCertificate" field='createForm.companyCertificate'></input-text>
@@ -86,48 +104,48 @@
                           label='MSC/IFFO/ASC/RTRS Expiry Dates' placeholder='MSC/IFFO/ASC/RTRS Expiry Dates'
                           model="site.certExpiry" field='createForm.expiryDates'></input-text>
               <link-text class='col-md-4 form-group' name='link'
-                          label='Link (IFFO/MSC/ASC/RTRS websites)' placeholder='Link (IFFO/MSC/ASC/RTRS websites)'
-                          txt-model="site.certlink.text"
-                          url-model="site.certLink.url"
-                          field='createForm.link'
-                          action="$ctrl.openLinkModal(callback)"></link-text>
+                         label='Link (IFFO/MSC/ASC/RTRS websites)' placeholder='Link (IFFO/MSC/ASC/RTRS websites)'
+                         txt-model="site.certlink.text"
+                         url-model="site.certLink.url"
+                         field='createForm.link'
+                         action="$ctrl.openLinkModal(callback)"></link-text>
             </div>
             <div class="row">
               <input-text class='col-md-4 form-group' name='fishSpecies'
-                  label='Fish Species' placeholder='Fish Species'
-                  model="site.fishSpecies" field='createForm.fishSpecies'></input-text>
+                          label='Fish Species' placeholder='Fish Species'
+                          model="site.fishSpecies" field='createForm.fishSpecies'></input-text>
               <input-text class='col-md-4 form-group' name='speciesCertification'
-                  label='Species Certification' placeholder='Species Certification'
-                  model="site.speciesCertification" field='createForm.speciesCertification'></input-text>
+                          label='Species Certification' placeholder='Species Certification'
+                          model="site.speciesCertification" field='createForm.speciesCertification'></input-text>
               <input-text class='col-md-4 form-group' name='iucnStatus'
                           label='IUCN status' placeholder='IUCN status'
                           model="site.iucnStatus" field='createForm.iucnStatus'></input-text>
             </div>
             <div class="row">
               <input-text class='col-md-4 form-group' name='certificatSupplied'
-                  label='Ridley Species Certificate Supplied' placeholder='Ridley Species Certificate Supplied'
-                  model="site.certificatSupplied" field='createForm.certificatSupplied'></input-text>
+                          label='Ridley Species Certificate Supplied' placeholder='Ridley Species Certificate Supplied'
+                          model="site.certificatSupplied" field='createForm.certificatSupplied'></input-text>
               <input-text class='col-md-4 form-group' name='auditRecordSupplied'
-                  label='Ridley RS Audit Record Supplied' placeholder='Ridley RS Audit Record Supplied'
-                  model="site.auditRecordSupplied" field='createForm.auditRecordSupplied'></input-text>
+                          label='Ridley RS Audit Record Supplied' placeholder='Ridley RS Audit Record Supplied'
+                          model="site.auditRecordSupplied" field='createForm.auditRecordSupplied'></input-text>
               <input-text class='col-md-4 form-group' name='qms' label='QMS' placeholder='QMS' 
-                  model="site.qms" field='createForm.qms'></input-text>
+                          model="site.qms" field='createForm.qms'></input-text>
             </div>
             <div class="row">
               <input-text class='col-md-4 form-group' name='faoArea'
-                  label='FAO area / CCAMLR area' placeholder='FAO area / CCAMLR area'
-                  model="site.faoArea" field='createForm.faoArea'></input-text>
+                          label='FAO area / CCAMLR area' placeholder='FAO area / CCAMLR area'
+                          model="site.faoArea" field='createForm.faoArea'></input-text>
               <input-text class='col-md-4 form-group' name='faoDesc'
-                  label='FAO Description of Location' placeholder='FAO Description of Location'
-                  model="site.faoDesc" field='createForm.faoDesc'></input-text>
+                          label='FAO Description of Location' placeholder='FAO Description of Location'
+                          model="site.faoDesc" field='createForm.faoDesc'></input-text>
               <input-text class='col-md-4 form-group' name='faoLink'
-                  label='FAO Link' placeholder='FAO Link'
-                  model="site.faoLink" field='createForm.faoLink'></input-text>
+                          label='FAO Link' placeholder='FAO Link'
+                          model="site.faoLink" field='createForm.faoLink'></input-text>
             </div>
             <div class="row">
               <input-text class='col-md-4 form-group' name='catchMethod'
-                  label='Catching Method' placeholder='Catching Method'
-                  model="site.catchMethod" field='createForm.catchMethod'></input-text>
+                          label='Catching Method' placeholder='Catching Method'
+                          model="site.catchMethod" field='createForm.catchMethod'></input-text>
             </div>
             <div class="row">
               <h4 class="section-header"><span class="label label-default">Fish Score</span></h4>
@@ -223,19 +241,19 @@
               <div class='col-md-4'>
                 <div class='row no-margin'>
                   <link-text class='form-group' name='fishScoreLink'
-                    label='FishSource Score Link' placeholder='FishSource Score Link'
-                    txt-model="site.fishScoreLink.text"
-                    url-model="site.fishScoreLink.url"
-                    field='createForm.fishScoreLink'
-                    action="$ctrl.openLinkModal(callback)"></link-text>
+                             label='FishSource Score Link' placeholder='FishSource Score Link'
+                             txt-model="site.fishScoreLink.text"
+                             url-model="site.fishScoreLink.url"
+                             field='createForm.fishScoreLink'
+                             action="$ctrl.openLinkModal(callback)"></link-text>
                 </div>
                 <div class='row no-margin'>
                   <link-text class='form-group' name='fishBaseData'
-                    label='Fishbase data' placeholder='Fishbase Data'
-                    txt-model="site.fishbaseData.text"
-                    url-model="site.fishbaseData.url"
-                    field='createForm.fishbaseData'
-                    action="$ctrl.openLinkModal(callback)"></link-text>
+                             label='Fishbase data' placeholder='Fishbase Data'
+                             txt-model="site.fishbaseData.text"
+                             url-model="site.fishbaseData.url"
+                             field='createForm.fishbaseData'
+                             action="$ctrl.openLinkModal(callback)"></link-text>
                 </div>
               </div>
             </div>
