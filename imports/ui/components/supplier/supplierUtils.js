@@ -139,7 +139,6 @@ export const SupplierUtils =
       'certType'             : 'None',
       'certExpiry'           : '',
       'certLink'             : {text : '', url : ''},
-      'linkUrl'              : '',
       'fishSpecies'          : '',
       'speciesCertification' : '',
       'iucnStatus'           : '',
@@ -161,6 +160,19 @@ export const SupplierUtils =
       'extraData1'           : [],
       'extraData2'           : []
     };
+  },
+  
+  reset : (supplier) => {
+    supplier.company             = '';
+    supplier.materials           = '';
+    supplier.productCode         = '';
+    supplier.countryOfOrigin     = '';
+    supplier.sanipesWebsite.text = '';
+    supplier.sanipesWebsite.url  = '';
+    supplier.companyWebsite.text = '';
+    supplier.companyWebsite.url  = '';
+    supplier.companyCertificate  = '';
+    supplier.sites               = [];
   },
   
   isKeyField : (field) => {

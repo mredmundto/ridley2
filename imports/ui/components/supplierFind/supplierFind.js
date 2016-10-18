@@ -2,14 +2,37 @@ import angular from 'angular';
 import angularMeteor from 'angular-meteor';
 import templateUrl from './supplierFind.html';
 
+function runAction(action) {
+  angular.element('#progress-modal').modal('show');
+  try {
+    action();
+  }
+  catch (e) {
+    angular.element('#progress-modal').modal('hide');
+  }
+}
+
+let endSearch = (ctrl, error, result) => {
+  try {
+    if (result) {
+      ctrl.suppliers = result;
+    }
+  }
+  catch (e) {
+  }
+  angular.element('#progress-modal').modal('hide');
+};
+      
+
 class SearchCtrl
 {
   constructor($scope, $state, $reactive, $stateParams) {
     'ngInject';
-    this.$scope   = $scope;
-    this.$state   = $state;
-    this.suppliers = {};
-    this.criteria  = $stateParams;
+    this.$scope     = $scope;
+    this.$state     = $state;
+    this.suppliers  = {};
+    this.resultType = 'type1'; 
+    this.criteria   = $stateParams;
     $reactive(this).attach($scope);
     
     if (this.criteria.run === true) {
@@ -27,6 +50,14 @@ class SearchCtrl
     }
   }
 
+  hasType1Result() {
+    return this.resultType === "type1" && this.suppliers.length > 0;
+  }
+
+  hasType2Result() {
+    return this.resultType === "type2" && this.suppliers.length > 0;
+  }
+
   resetValue() {
     switch (this.criteria.searchBy) {
       case 'byCertificate' : {
@@ -35,7 +66,7 @@ class SearchCtrl
       }
       
       case "byAsc" : {
-        this.criteria.value = 'ASC';
+        this.criteria.value = 'yes';
         break;
       }
       
@@ -58,33 +89,67 @@ class SearchCtrl
   }
 
   findByName() {
-    this.call('findSuppliersByName', this.criteria.value, (error, result) =>
-    {
-      if (result) {
-        this.suppliers = result;
-      }
-    })
+    let action = () => {
+      this.resultType = "type1";
+      this.call('findSuppliersByName', this.criteria.value, (error, result) => {
+        endSearch(this, error, result);
+      });
+    };
+    runAction(action);
   }
 
   findByScore() {
-    this.call('findSuppliersByScore', this.criteria.cmp, this.criteria.value, (error, result) =>
-    {
-      if (result) {
-        this.suppliers = result;
-      }
-    })
+    let action = () => {
+      this.resultType = "type2";
+      this.call('findSuppliersByScore', this.criteria.cmp, this.criteria.value, (error, result) => {
+        endSearch(this, error, result);
+      });
+    }
+    runAction(action);
   }
 
   findByCert() {
-    this.call('findSuppliersByCertificate', this.criteria.value, (error, result) =>
-    {
-      if (result) {
-        this.suppliers = result;
-      }
-    })
+    let action = () => {
+      this.resultType = "type2";
+      this.call('findSuppliersByCertificate', this.criteria.value, (error, result) => {
+        endSearch(this, error, result);
+      });
+    }
+    runAction(action);
+  }
+  
+  findByAsc() {
+    let action = () => {
+      let value = (this.criteria.value === 'yes' ? true : false);
+      this.resultType = "type2";
+      this.call('findSuppliersByAsc', value, (error, result) => {
+        endSearch(this, error, result);
+      });
+    }
+    runAction(action);
+  }
+  
+  findByCaptureMethod() {
+    let action = () => {
+      this.resultType = "type2";
+      this.call('findSuppliersByCaptureMethod', this.criteria.value, (error, result) => {
+        endSearch(this, error, result);
+      });
+    }
+    runAction(action);
+  }
+
+  findByMaterial() {
+    let action = () => {
+      this.resultType = "type2";
+      this.call('findSuppliersByMaterial', this.criteria.value, (error, result) => {
+        endSearch(this, error, result);
+      });
+    }
+    runAction(action);
   }
 }
-
+  
 export default angular
 .module('SupplierFind', [
   angularMeteor

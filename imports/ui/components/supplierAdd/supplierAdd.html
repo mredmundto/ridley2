@@ -19,7 +19,8 @@
 <link-modal model="$ctrl.newLinkUrl" action="$ctrl.linkToUrl()"></link-modal>
 <form name='createForm' class="container-fluid" novalidate>
   <div class="row btn-bar extra-bottom-padding">
-    <button class="btn btn-default col-md-1" ng-click="$ctrl.submit()" ng-disabled="createForm.$invalid">
+    <button id='submitBtn' class="btn btn-default col-md-1" ng-click="$ctrl.submit()" ng-disabled="createForm.$invalid"
+            data-content='{{$ctrl.message}}' data-html='true' data-placement='bottom'>
       Submit <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
     </button>
     <label class="btn btn-default col-md-1">
@@ -61,12 +62,12 @@
                action="$ctrl.openLinkModal(callback)"></link-text>
   </div>
   <div class="row">
-    <div class="panel-group fill" id="accordion" role="tablist" aria-multiselectable="true"
+    <div class="panel-group fill" id="sites" role="tablist" aria-multiselectable="true"
          ng-repeat="site in $ctrl.supplier.sites track by $index">
       <div class="panel panel-info">
         <div class="panel-heading" role="tab" id="siteName{{$index}}">
           <h4 class="panel-title">
-            <a class="btn btn-info btn-xs" role="button" data-toggle="collapse" data-parent="#accordion" 
+            <a class="btn btn-info btn-xs" role="button" data-toggle="collapse" data-parent="#sites" 
                href="#site{{$index}}" aria-expanded="true" aria-controls="site{{$index}}">
               <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
             </a>
@@ -138,9 +139,10 @@
               <input-text class='col-md-4 form-group' name='faoDesc'
                           label='FAO Description of Location' placeholder='FAO Description of Location'
                           model="site.faoDesc" field='createForm.faoDesc'></input-text>
-              <input-text class='col-md-4 form-group' name='faoLink'
-                          label='FAO Link' placeholder='FAO Link'
-                          model="site.faoLink" field='createForm.faoLink'></input-text>
+              <link-text class='col-md-4 form-group' name='faoLink'
+                         label='FAO Link' placeholder='FAO Link'
+                         txt-model="site.faoLink.text" url-model="site.faoLink.url"
+                         field='createForm.faoLink'></input-text>
             </div>
             <div class="row">
               <input-text class='col-md-4 form-group' name='catchMethod'
@@ -399,7 +401,8 @@
       <button class="btn btn-default btn-sm" ng-click="$ctrl.addSite()" ng-hide="$ctrl.addingSite">
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Site 
       </button>
-      <button class="btn btn-default btn-sm" ng-click="$ctrl.createSite()" ng-show="$ctrl.addingSite">
+      <button class="btn btn-default btn-sm" ng-click="$ctrl.createSite()" 
+              ng-show="$ctrl.addingSite" ng-disabled="$ctrl.newSiteName === ''">
         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
       </button>
       <button class="btn btn-default btn-sm" ng-click="$ctrl.cancelCreateSite()" ng-show="$ctrl.addingSite">

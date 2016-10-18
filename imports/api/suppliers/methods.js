@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Suppliers } from './collection';
 
-
 function calculateScore(supplier) {
   var score = 0;
   for (let i=0; i < supplier.sites.length; i++)
@@ -57,9 +56,10 @@ function findSuppliersByScore(op, value) {
     return null;
   }
   else {
+    let scoreVal = parseInt(value);
     switch (op) {
       case 'gt' : {
-        return Suppliers.find({'sites.score' : {$gt : parseInt(value)}}).fetch();
+        return Suppliers.find({'sites.score' : {$gt : scoreVal}}).fetch();
       }
       
       case 'lt' : {
@@ -86,7 +86,7 @@ function findSuppliersByCertificate(type) {
     return Suppliers.find({}).fetch();
   }
   else {
-    return Suppliers.find({'certType' : type}).fetch();
+    return Suppliers.find({'sites.certType' : type}).fetch();
   }
 }
 
@@ -96,10 +96,10 @@ function findSuppliersByAsc(hasAsc) {
   }
   else {
     if (hasAsc) {
-      return Suppliers.find({'certType' : ASC}).fetch();
+      return Suppliers.find({'sites.certType' : 'ASC'}).fetch();
     }
     else {
-      return Suppliers.find({'certType' : {$ne : ASC}}).fetch();
+      return Suppliers.find({'sites.certType' : {$ne : 'ASC'}}).fetch();
     }
   }
 }
@@ -109,7 +109,7 @@ function findSuppliersByCaptureMethod(cMethod) {
     return null;
   }
   else {
-    return Suppliers.find({'catchMethod' : cMethod}).fetch();
+    return Suppliers.find({'sites.catchMethod' : cMethod}).fetch();
   }
 }
 
@@ -153,19 +153,9 @@ function scoreStats() {
 }
 
 function certStats() {
-//  let query = [
-//    {$group   : {_id : '$certType', count : {$sum : 1}}}
-//  ]
   let query = [
     {$project : {
-//      type : {$cond : {if : {$eq:["$govtManaged", true]}, then:"Government", else:"$certType"}}
-      type : {$cond : {
-        if : {$eq:["$govtManaged", true]}, then:"Government", 
-        else: {
-          if : {$or : [{$eq:["certType", "MSC"]}, {$eq:["certType", "IFFO"]}, {$eq:["certType", "RTSC"]}]},
-          then : "$certType", else : {$literal : "Uncertified"}
-        }
-      }}
+      type : {$cond : {if : {$eq:["$sites.govtManaged", true]}, then:"Government", else:"$certType"}}
     }},
     {$group : {_id : '$type', count : {$sum : 1}}}
   ]
@@ -176,11 +166,8 @@ function certStats() {
   let getStats = Meteor.wrapAsync(aggregate);
   let stats    = getStats(Suppliers.rawCollection(), query);
   
-  console.log(JSON.stringify(stats));
-  
   let result = {};
   for (var i=0; i < stats.length; i++) {
-    console.log(stats[i]._id + " = " + stats[i].count);
     result[stats[i]._id] = stats[i].count;
   }
   return result;
@@ -221,7 +208,7 @@ function catchMethodStats() {
   let result = {};
   for (var i=0; i < stats.length; i++) {
     if (stats[i]._id == null || stats[i]._id.length === 0) {
-      result["Unkown"] = stats[i].count;
+      result["Unknown"] = stats[i].count;
     }
     else {
       result[stats[i]._id] = stats[i].count;
@@ -233,13 +220,9 @@ function catchMethodStats() {
 if (Meteor.isServer) {
   Meteor.methods({
     scoreStats, certStats, ascStats, catchMethodStats, 
-    addSupplier, uploadSuppliers
+    addSupplier, uploadSuppliers,
+    getSupplier, findSuppliersByName, findSuppliersByScore,
+    findSuppliersByCertificate, findSuppliersByAsc,
+    findSuppliersByCaptureMethod, findSuppliersByMaterial
   });
 }
-
-Meteor.methods({
-  getSupplier, findSuppliersByName, findSuppliersByScore,
-  findSuppliersByCertificate, findSuppliersByAsc,
-  findSuppliersByCaptureMethod, findSuppliersByMaterial
-});
-

@@ -169,18 +169,31 @@ class ExcelParser
   }
 }
 
+
+let success_popup =
+  '<h4 class="no-margin no-padding" style="display:inline-block">' +
+  '<span class="glyphicon glyphicon-ok-sign green"></span></h4>' +
+  '<h5 class="no-margin no-padding" style="display:inline-block">&nbsp;&nbsp;Added Successfully.</h5>';
+  
+let failure_popup =
+  '<h4 class="no-margin no-padding" style="display:inline-block">' +
+  '<span class="glyphicon glyphicon-remove-sign red"></span></h4>' +
+  '<h5 class="no-margin no-padding" style="display:inline-block">&nbsp;&nbsp;Added Failed.</h5>';
+
 class AddSupplierCtrl
 {
-  constructor($scope, $reactive, ExcelParser) {
+  constructor($scope, $reactive, $timeout, ExcelParser) {
     'ngInject';
     $scope.score_pattern = '\\d+(\\.\\d+)?'
     
-    this._scope         = $scope;
-    this.fieldMapper    = SupplierUtils;
-    this.ExcelParser    = ExcelParser;
-    this.addingSite     = false;
-    this.newSiteName    = '';
-    this.urlSetter      = null;
+    this.timer       = $timeout;
+    this.fieldMapper = SupplierUtils;
+    this.ExcelParser = ExcelParser;
+    this.addingSite  = false;
+    this.newSiteName = '';
+    this.urlSetter   = null;
+    this.newLinkUrl  = '';
+    this.message     = success_popup;
 
     this.extraCert      = "ISO 9001";
     this.extraCertInfo  = "";
@@ -267,16 +280,24 @@ class AddSupplierCtrl
   }
   
   submit() {
-    console.log(JSON.stringify(this.supplier));
-//    Meteor.call('addSupplier', this.supplier, (error, result) =>
-//    {
-//      if (error) {
-//        console.log(error);
-//      }
-//      else {
-//        this.reset();
-//      }
-//    })
+    Meteor.call('addSupplier', this.supplier, (error, result) =>
+    {
+      if (error) {
+        this.message = failure_popup;
+        angular.element('#submitBtn').popover('show');
+        this.timer(() => {
+          angular.element('#submitBtn').popover('destroy');
+        }, 1000);
+      }
+      else {
+        this.reset();
+        this.message = success_popup;
+        angular.element('#submitBtn').popover('show');
+        this.timer(() => {
+          angular.element('#submitBtn').popover('destroy');
+        }, 1000);
+      }
+    })
   }
   
   reset() {
@@ -286,35 +307,7 @@ class AddSupplierCtrl
     this.extraData1Info = "";
     this.extraData2     = "1";
     this.extraData2Info = "";
-    this.supplier = {
-      'company' : '',
-      'materials' : '',
-      'productCode' : '',
-      'countryOfOrigin' : '',
-      'govtManaged' : false,
-      'certType' : 'None',
-      
-      // All optional after
-      'site' : [],
-      'sanipesWebsite' : '',
-      'companyWebsite' : '',
-      'companyCertificate' : '',
-      'fishSpecies' : '',
-      'speciesCertification' : '',
-      'iucnStatus' : '',
-      'certificatSupplied' : '',
-      'auditRecordSupplied' : '',
-      'qms' : '',
-      'expiryDates' : '',
-      'link' : '',
-      'catchMethod' : '',
-      'faoArea' : '',
-      'faoDesc' : '',
-      'faoLink' : '',
-      extraCerts : [],
-      extraData1 : [],
-      extraData2 : []
-    };
+    SupplierUtils.reset(this.supplier);
   }
 }
 

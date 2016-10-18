@@ -1,3 +1,21 @@
+<div class="modal fade" id="progress-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="panel panel-primary">
+          <div class="panel-heading">Uploading Data</div>
+          <div class="panel-body">
+            <div class="progress progress-striped active">
+              <div class="progress-bar"  role="progressbar" aria-valuenow="100" 
+                   aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="row">
   <form name="searchForm">
     <div class="container">
@@ -19,8 +37,7 @@
             <input type="text" class="form-control" ng-model="$ctrl.criteria.value"
                    ng-keydown='$event.keyCode == 13 && $ctrl.search()' placeholder="List All">
             <span class="input-group-btn">
-              <button class="btn btn-default" type="button" 
-                      ng-disabled='searchForm.$invalid' ng-click="$ctrl.findByName()">
+              <button class="btn btn-default" type="button" ng-click="$ctrl.findByName()">
                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
               </button>
             </span>
@@ -40,7 +57,7 @@
             <input type="text" class="form-control" ng-model="$ctrl.criteria.value">
             <span class="input-group-btn">
               <button class="btn btn-default" type="button" 
-                      ng-disabled='searchForm.$invalid' ng-click="$ctrl.findByScore()">
+                      ng-disabled='$ctrl.criteria.value === ""' ng-click="$ctrl.findByScore()">
                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
               </button>
             </span>
@@ -57,44 +74,42 @@
             </select>
           </span>
           <span class="input-group-btn">
-            <button class="btn btn-default" type="button" 
-                    ng-disabled='searchForm.$invalid' ng-click="$ctrl.findByCert()">
+            <button class="btn btn-default" type="button" ng-click="$ctrl.findByCert()">
               <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
             </button>
           </span>
         </div>
         <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byAsc"'>
           <span class="col-md-2 select-box">
-            <select class="form-control">
-              <option value="ASC">Yes</option>
-              <option value="non-ASC">No</option>
+            <select class="form-control" ng-model="$ctrl.criteria.value">
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
             </select>
           </span>
           <span class="input-group-btn">
             <button class="btn btn-default" type="button" 
-                    ng-disabled='searchForm.$invalid' ng-click="$ctrl.search()">
+                    ng-disabled='searchForm.$invalid' ng-click="$ctrl.findByAsc()">
               <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
             </button>
           </span>
         </div>
         <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byCaptureMethod"'>
           <span class="col-md-4 select-box">
-            <select class="form-control">
+            <select class="form-control" ng-model="$ctrl.criteria.value">
               <option value="Wild Caught">Wild Caught</option>
               <option value="Farmed">Farmed</option>
               <option value="By Product / Trimming">By Product / Trimming</option>
             </select>
           </span>
           <span class="input-group-btn">
-            <button class="btn btn-default" type="button" 
-                    ng-disabled='searchForm.$invalid' ng-click="$ctrl.search()">
+            <button class="btn btn-default" type="button" ng-click="$ctrl.findByCaptureMethod()">
               <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
             </button>
           </span>
         </div>
         <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byMaterial"'>
           <span class="col-md-7 select-box">
-            <select class="form-control">
+            <select class="form-control" ng-model="$ctrl.criteria.value">
               <option value="Fish Meal">Fish Meal</option>
               <option value="Fish Oil">Fish Oil</option>
               <option value="DFS (Dried Fish Soluble)">DFS (Dried Fish Soluble)</option>
@@ -106,8 +121,7 @@
             </select>
           </span>
           <span class="input-group-btn">
-            <button class="btn btn-default" type="button" 
-                    ng-disabled='searchForm.$invalid' ng-click="$ctrl.search()">
+            <button class="btn btn-default" type="button" ng-click="$ctrl.findByMaterial()">
               <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
             </button>
           </span>
@@ -118,16 +132,32 @@
 </div>
 <div class="row">
   <h3 ng-hide='$ctrl.suppliers.length > 0'>No results found.</h3>
-  <table class="table table-hover result" ng-show='$ctrl.suppliers.length > 0'>
+  <table class="table table-hover result-type1" ng-show='$ctrl.hasType1Result()'>
     <tr>
-      <th>Score</th>
       <th>Company</th>
     </tr>
     <tr ng-repeat="supplier in $ctrl.suppliers">
-      <td>{{supplier.score}}</td>
       <td>
         <a ui-sref="home.supplierEdit({'supplierId' : '{{supplier._id}}'})">{{supplier.company}}</a>
       </td>
     </tr>
+  </table>
+  <table class="table table-hover result-type2" ng-show='$ctrl.hasType2Result()'>
+    <tr>
+      <th>Score</th>
+      <th>Company / Site</th>
+    </tr>
+    <tr ng-if="0" ng-repeat-start="supplier in $ctrl.suppliers"></tr>
+    <tr>
+      <td></td>
+      <td>
+        <a ui-sref="home.supplierEdit({'supplierId' : '{{supplier._id}}'})">{{supplier.company}}</a>
+      </td>
+    </tr>
+    <tr ng-repeat="site in supplier.sites">
+      <td>{{site.score}}</td>
+      <td class="indent">{{site.siteName}}</td>  
+    </tr>
+    <tr ng-if="0" ng-repeat-end></tr>
   </table>
 </div>
