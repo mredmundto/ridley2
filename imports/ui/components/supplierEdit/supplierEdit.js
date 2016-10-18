@@ -11,35 +11,42 @@ class EditSupplierCtrl
   constructor($scope, $stateParams) {
     'ngInject';
     this._scope        = $scope;
-    this.level4Certs   = [];
-    this.extraCert     = "ISO 9001";
-    this.extraCertInfo = "";
     this.readonly      = true;
-    this.supplierId    = $stateParams.supplierId;
-    
+    this.supplierId    = $stateParams.supplierId;    
+    this.extraCert      = "ISO 9001";
+    this.extraCertInfo  = "";
+    this.extraData1     = "1";
+    this.extraData1Info = "";
+    this.extraData2     = "1";
+    this.extraData2Info = "";
     this.supplier = {
-      'materials' : '',
       'company' : '',
+      'materials' : '',
       'productCode' : '',
       'countryOfOrigin' : '',
+      'govtManaged' : false,
+      'certType' : 'None',
+      
+      // All optional after
+      'site' : [],
       'sanipesWebsite' : '',
       'companyWebsite' : '',
       'companyCertificate' : '',
       'fishSpecies' : '',
-      'iucnStatus' : '',
       'speciesCertification' : '',
+      'iucnStatus' : '',
       'certificatSupplied' : '',
       'auditRecordSupplied' : '',
       'qms' : '',
-      'govtManaged' : '',
-      'certType' : '',
-      'supplierSite' : '',
       'expiryDates' : '',
       'link' : '',
+      'catchMethod' : '',
       'faoArea' : '',
       'faoDesc' : '',
       'faoLink' : '',
-      'catchMethod' : ''
+      extraCerts : [],
+      extraData1 : [],
+      extraData2 : []
     }
     
     this.fieldMap = {
@@ -84,13 +91,40 @@ class EditSupplierCtrl
   }
   
   addExtraCertificate() {
-    this.level4Certs.push({"cert" : this.extraCert, "info" : this.extraCertInfo});
+    this.supplier.extraCerts.push({"cert" : this.extraCert, "info" : this.extraCertInfo});
     this.extraCert     = "ISO 9001";
     this.extraCertInfo = "";
   }
   
   removeExtraCertificate(idx) {
-    this.level4Certs.splice(idx, 1);
+    this.supplier.extraCerts.splice(idx, 1);
+  }
+  
+  addExtraData1() {
+    this.supplier.extraData1.push({"value" : this.extraData1, "info" : this.extraData1Info});
+    this.extraData1     = "1";
+    this.extraData1Info = "";
+  }
+  
+  removeExtraData1(idx) {
+    this.supplier.extraData1.splice(idx, 1);
+  }
+  
+  addExtraData2() {
+    this.supplier.extraData2.push({"value" : this.extraData2, "info" : this.extraData2Info});
+    this.extraData2     = "1";
+    this.extraData2Info = "";
+  }
+  
+  removeExtraDAta2(idx) {
+    this.supplier.extraData2.splice(idx, 1);
+  }
+  
+  upload(file) {
+    this.ExcelParser.parse(file, this.fieldMap, (value) => {
+      this.supplier = value;
+      this._scope.$digest();
+    })
   }
   
   submit() {

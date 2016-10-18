@@ -11,30 +11,52 @@ class GraphCtrl
   
   draw(type) {
     switch (type) {
-      case 'by Score' : {
-        Meteor.call('scoreStats', (error, result) =>
+      case 'by ASC' : {
+        Meteor.call('ascStats', (error, result) =>
         { 
           if (error == null)
           {
+            let columns = [];
+            for (var type in result) {
+              columns.push([type, result[type]]);
+            }
+            
             this.chart = c3.generate({
-              bindto : '#scoreChart',
+              bindto : '#ascChart',
               data: {
-                columns: [
-                    ['below', result.below],
-                    ['above', result.above],
-                ],
+                columns: columns,
                 type : 'pie',
                 onclick: (d, i) => {
-                  if (d.id === 'below') {
-                    this.router.transitionTo(
-                      'home.supplierSearch', {searchBy:'byScore', value:70, cmp:'lt', 'run':true}
-                    );
-                  }
-                  else {
-                    this.router.transitionTo(
-                      'home.supplierSearch', {searchBy:'byScore', value:70, cmp:'gte', 'run':true}
-                    );
-                  }
+                  this.router.transitionTo(
+                    'home.supplierSearch', {searchBy:'byASC', value:d.id, 'run':true}
+                  );
+                }
+              }
+            });
+          }
+        });
+        break;
+      }
+      
+      case 'by Method' : {
+        Meteor.call('catchMethodStats', (error, result) =>
+        { 
+          if (error == null)
+          {
+            let columns = [];
+            for (var type in result) {
+              columns.push([type, result[type]]);
+            }
+            
+            this.chart = c3.generate({
+              bindto : '#catchMethodChart',
+              data: {
+                columns: columns,
+                type : 'pie',
+                onclick: (d, i) => {
+                  this.router.transitionTo(
+                    'home.supplierSearch', {searchBy:'byCatchMethod', value:d.id, 'run':true}
+                  );
                 }
               }
             });
@@ -74,8 +96,9 @@ class GraphCtrl
   }
   
   init() {
-    this.draw('by Score');
+    this.draw('by ASC');
     this.draw('by Certificate');
+    this.draw('by Method');
   }
 }
 

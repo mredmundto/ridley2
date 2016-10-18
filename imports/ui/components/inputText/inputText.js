@@ -16,7 +16,7 @@ export default angular.module(
       model : '=',
       field : '=',
       readonly : '=?',
-      required : '@',
+      required : '@?',
       placeholder : '@'
     },
     link : function(scope, iElem, iAttrs) {

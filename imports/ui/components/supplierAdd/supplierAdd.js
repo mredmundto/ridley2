@@ -1,8 +1,12 @@
 import angular from 'angular';
 import angularMeteor from 'angular-meteor';
 import templateUrl from './supplierAdd.html';
+
+import { SupplierUtils } from '../supplier/supplierUtils.js';
 import { Suppliers } from '../../../api/suppliers';
 import { name as uploadBegin } from '../uploadBegin/uploadBegin';
+import { name as linkText } from '../linkText/linkText';
+import { name as linkModal } from '../linkText/linkModal';
 import { name as inputText } from '../inputText/inputText';
 import { name as inputChoice } from '../inputChoice/inputChoice';
 
@@ -23,35 +27,130 @@ class ExcelParser
 
         var sheetName = workbook.SheetNames[0];
         var worksheet = workbook.Sheets[sheetName];
-        var fieldCols = {};
-        var entries   = [];
+
+        let colFields     = {};
+        let colLabels     = [];
+        let keyColumns    = [];
+        let commonColumns = [];
+        let supplier      = SupplierUtils.createSupplier();
+        let site          = SupplierUtils.createSite();
+        let records       = [];
+        
+        let currentRow = '2';
         for (z in worksheet)
         {
           /* all keys that do not begin with "!" correspond to cell addresses */
           if (z[0] === '!')
             continue;
 
-          if (z.endsWith('1'))
-          {
-            var label = worksheet[z].v;
-            var col   = z.substring(0, z.length - 1)
-            fieldCols[col] = fieldMap[label];
-
-          }
-          else
-          {
-            var idx = z.substring(z.length - 1) - 2;
-            if (entries[idx] == undefined) {
-              entries[idx] = {};
+          let row = z.match(/\d+/g)[0];
+          let col = z.match(/\D+/g)[0];
+          if (row === '1') {
+            let label = worksheet[z].v.trim();
+            colLabels[col] = label;
+            colFields[col] = SupplierUtils.labelToField(label);
+            
+            if (SupplierUtils.isKeyField(label)) {
+              keyColumns.push(col);
             }
-
-            var col   = z.substring(0, z.length - 1)
-            var field = fieldCols[col];
-            entries[idx][field] = worksheet[z].v;
+            else if (SupplierUtils.isCommonField(label)) {
+              commonColumns.push(col);
+            }
+          }
+          else {
+            if (currentRow != row) {
+              supplier.sites.push(site);                            
+              supplier = SupplierUtils.createSupplier();
+              site     = SupplierUtils.createSite();
+              currentRow = row;
+            }
+            
+            let label = colLabels[col];
+            let field = colFields[col];
+            let value = worksheet[z].v;
+            if (typeof value === 'string') {
+              value = value.trim();
+            }
+            
+            if (SupplierUtils.isKeyField(label)) {
+              supplier[field] = value;
+              if (!records[value]) {
+                records[value] = supplier;
+              } else {
+                supplier = records[value];
+              }
+            }
+            else if (SupplierUtils.isCommonField(label)) {
+              if (SupplierUtils.isLinkField(field)) {
+                supplier[field] = SupplierUtils.parseLink(field, value);
+              } else {
+                supplier[field] = value;
+              }
+            }
+            else if (SupplierUtils.isFishScoreField(field)) {
+              site[field] = SupplierUtils.parseFishScore(value);
+            }
+            else if (SupplierUtils.extraCertIdx(label) > -1) {
+              if (value) {
+                let cert = {};
+                if (typeof value === 'string' && value.length > 0) {                  
+                  cert[label] = value;
+                } else {
+                  cert[label] = value;
+                }
+                site.extraCerts.push(cert);
+              }
+            }
+            else if (SupplierUtils.extraData1Idx(label) > -1) {
+              if (value) {
+                let xData = {};
+                if (typeof value === 'string' && value.length > 0) {                  
+                  xData[label] = value;
+                } else {
+                  xData[label] = value;
+                }
+                site.extraData1.push(xData);
+              }
+            }
+            else if (SupplierUtils.extraData2Idx(label) > -1) {
+              if (value) {
+                let xData = {};
+                if (typeof value === 'string' && value.length > 0) {                  
+                  xData[label] = value;
+                } else {
+                  xData[label] = value;
+                }
+                site.extraData2.push(xData);
+              }
+            }
+            else {
+              if (value) {              
+                if (typeof value === 'string' && value.length > 0) {
+                  if (SupplierUtils.isLinkField(field)) {
+                    site[field] = SupplierUtils.parseLink(field, value);
+                  }
+                  else {
+                    site[field] = value;
+                  }
+                }
+                else {
+                  site[field] = value;
+                }
+              }
+            }
           }
         }
 
-        cb(entries[0]);
+        if (supplier.sites == undefined) {
+          supplier.sites = [];
+        }
+        supplier.sites.push(site);
+        
+        Object.keys(records).forEach((key, idx) => {
+          console.log(key + " =>");
+          console.log(JSON.stringify(records[key]));
+        });
+//        cb(entries[0]);
       };
       reader.readAsBinaryString(file);
     }
@@ -62,125 +161,84 @@ class AddSupplierCtrl
 {
   constructor($scope, ExcelParser) {
     'ngInject';
-    this._scope        = $scope;
-    this.level4Certs   = [];
-    this.extraCert     = "ISO 9001";
-    this.extraCertInfo = "";
-    this.ExcelParser   = ExcelParser;
-    this.supplier = {
-      'materials' : '',
-      'company' : '',
-      'productCode' : '',
-      'countryOfOrigin' : '',
-      'sanipesWebsite' : '',
-      'companyWebsite' : '',
-      'companyCertificate' : '',
-      'fishSpecies' : '',
-      'iucnStatus' : '',
-      'speciesCertification' : '',
-      'certificatSupplied' : '',
-      'auditRecordSupplied' : '',
-      'qms' : '',
-      'govtManaged' : '',
-      'certType' : '',
-      'supplierSite' : '',
-      'expiryDates' : '',
-      'link' : '',
-      'faoArea' : '',
-      'faoDesc' : '',
-      'faoLink' : '',
-      'catchMethod' : ''
-    }
+    $scope.score_pattern = '\\d+(\\.\\d+)?'
     
-    this.fieldMap = {
-      'Materials' : 'materials',
-      'Product Code' : 'productCode',
-      'Country Of Origin' : 'countryOfOrigin',
-      'SANIPES Website' : 'sanipesWebsite',
-      'Company / Supplier' : 'company',
-      'Company Website' : 'companyWebsite',
-      'Company Certificates' : 'companyCertificate',
-      'Fish Species' : 'fishSpecies',
-      'IUCN status' : 'iucnStatus',
-      'Species Certification' : 'speciesCertification',
-      'Ridley Species Certificate Supplied' : 'certificatSupplied',
-      'Ridley RS Audit Record Supplied' : 'auditRecordSupplied',
-      'QMS' : 'qms',
-      'Gov\'t Managed' : 'govtManaged',
-      'IFFO / MSC / ASC / RTRS' : 'certType',
-      'Supplier site' : 'supplierSite',
-      'MSC/IFFO/ASC/RTRS Expiry Dates' : 'expiryDates',
-      'Link (IFFO/MSC/ASC/RTRS websites)' : 'link',
-      'FAO area / CCAMLR area' : 'faoArea',
-      'FAO Description of Location' : 'faoDesc',
-      'FAO Link' : 'faoLink',
-      'Catching Method' : 'catchMethod'
-    };
-      
-    $scope.fields =
-    {
-      mandatory : 
-      [
-        {label : 'Materials', name : 'Materials'},
-        {label : 'Product Code', name : 'productCode'},
-        {label : 'Country Of Origin', name : 'countryOfOrigin'},
-        {label : 'SANIPES Website', name : 'sanipesWebsite'},
-        {label : 'Company / Supplier', name : 'company'},
-        {label : 'Company Website', name : 'companyWebsite'},
-        {label : 'Company Certificates', name : 'companyCertificate'},
-        {label : 'Fish Species', name : 'fishSpecies'},
-        {label : 'IUCN status', name : 'iucnStatus'},
-        {label : 'Species Certification', name : 'speciesCertification'},
-        {label : 'Ridley Species Certificate Supplied', name : 'certificatSupplied'},
-        {label : 'Ridley RS Audit Record Supplied', name : 'auditRecordSupplied'},
-        {label : 'QMS', name : 'qms'},
-        {label : 'Gov\'t Managed', name : 'govtManaged'},
-        {label : 'IFFO / MSC / ASC / RTRS', name : 'certType', type : 'select', values : ['IFFO', 'MSC', 'ASC', 'RTRS']},
-        {label : 'Supplier site', name : 'supplierSite'},
-        {label : 'MSC/IFFO/ASC/RTRS Expiry Dates', name : 'expiryDates'},
-        {label : 'Link (IFFO/MSC/ASC/RTRS websites)', name : 'link'},
-        {label : 'FAO area / CCAMLR area', name : 'faoArea'},
-        {label : 'FAO Description of Location', name : 'faoDesc'},
-        {label : 'FAO Link', name : 'faoLink'},
-        {label : 'Catching Method', name : 'catchMethod'}
-      ],
-      optional :
-      [
-        {label : 'BAP', name : 'BAP'},
-        {label : 'BASC (Business Alliance for Secure Commerce)', name : 'BASC'},
-        {label : 'BSE Free Certificate', name : 'BSE'},
-        {label : 'CCAMLR Commission for the Conservation of Antarctic Marine Living Resources', name : 'CCAMlR'},
-        {label : 'Chain of Custody documents', name : 'custodyDoc'},
-        {label : 'CoA\'s', name : 'CoA'},
-        {label : 'Debio (organic)', name : 'Debio'},
-        {label : 'Dolphin Safe', name : 'Dolphin'},
-        {label : 'FEMAS	Friends of the Sea', name : 'FEMAS'},
-        {label : 'GMP', name : 'GMP'},
-        {label : 'HACCP', name : 'HACCP'},
-        {label : 'ISO 14000', name : 'ISO14000'},
-        {label : 'ISO 9001:2008', name : 'ISO9001'},
-        {label : 'ISO 22000:2005', name : 'ISO22000'},
-        {label : 'IUCN', name : 'IUCN'},
-        {label : 'IUU', name : 'IUU'},
-        {label : 'Manufacturers Declaration', name : 'ManufacturersDecl'},
-        {label : 'Naturland', name : 'Naturland'},
-        {label : 'NOFIMA', name : 'NOFIMA'},
-        {label : 'QMS', name : 'QMS'},
-        {label : 'WWF', name : 'WWF'},
-        {label : 'By product of processing', name : 'byProductProcess'},
-        {label : 'Agree G GAP covered', name : 'AgreeGGAP'}
-      ]
-    };
+    this._scope         = $scope;
+    this.fieldMapper    = SupplierUtils;
+    this.ExcelParser    = ExcelParser;
+    this.addingSite     = false;
+    this.newSiteName    = '';
+    this.urlSetter      = null;
+    this.newLinkUrl     = '';
+    
+    this.extraCert      = "ISO 9001";
+    this.extraCertInfo  = "";
+    this.extraData1     = "1";
+    this.extraData1Info = "";
+    this.extraData2     = "1";
+    this.extraData2Info = "";
+    this.supplier = SupplierUtils.createSupplier();
   }
   
-  addExtraCertificate() {
-    this.level4Certs.push({"cert" : this.extraCert, "info" : this.extraCertInfo});
+  openLinkModal(cb) {
+    this.urlSetter = cb;
+    angular.element('#link-modal').modal('show');
+  }
+  
+  linkToUrl() {
+    this.urlSetter(this.newLinkUrl);
+    this.newLinkUrl = '';
+  }
+  
+  addSite() {
+    this.addingSite = true;
+  }
+  
+  createSite() {
+    let site = SupplierUtils.createSite(this.newSiteName);
+    this.supplier.sites.push(site);
+    this.newSiteName = '';
+    this.addingSite  = false;
+  }
+  
+  removeSite(idx) {
+    this.supplier.sites.splice(idx, 1);
+  }
+  
+  cancelCreateSite() {
+    this.addingSite = false;
+  }
+  
+  addExtraCertificate(site) {
+    site.extraCerts.push({"cert" : this.extraCert, "info" : this.extraCertInfo});
     this.extraCert     = "ISO 9001";
     this.extraCertInfo = "";
   }
   
-  removeExtraCertificate(idx) {
-    this.level4Certs.splice(idx, 1);
+  removeExtraCertificate(site, idx) {
+    site.extraCerts.splice(idx, 1);
+  }
+  
+  addExtraData1(site) {
+    let value = SupplierUtils.getExtraData1Criterion(parseInt(this.extraData1));
+    site.extraData1.push({"criterion" : value, "info" : this.extraData1Info});
+    this.extraData1     = "1";
+    this.extraData1Info = "";
+  }
+  
+  removeExtraData1(site, idx) {
+    site.extraData1.splice(idx, 1);
+  }
+  
+  addExtraData2(site) {
+    let value = SupplierUtils.getExtraData2Criterion(parseInt(this.extraData2));
+    site.extraData2.push({"criterion" : value, "info" : this.extraData2Info});
+    this.extraData2     = "1";
+    this.extraData2Info = "";
+  }
+  
+  removeExtraData2(site, idx) {
+    site.extraData2.splice(idx, 1);
   }
   
   upload(file) {
@@ -191,47 +249,59 @@ class AddSupplierCtrl
   }
   
   submit() {
-    Meteor.call('addSupplier', this.supplier, (error, result) =>
-    {
-      if (error) {
-        console.log(error);
-      }
-      else {
-        this.reset();
-      }
-    })
+    console.log(JSON.stringify(this.supplier));
+//    Meteor.call('addSupplier', this.supplier, (error, result) =>
+//    {
+//      if (error) {
+//        console.log(error);
+//      }
+//      else {
+//        this.reset();
+//      }
+//    })
   }
   
   reset() {
+    this.extraCert      = "ISO 9001";
+    this.extraCertInfo  = "";
+    this.extraData1     = "1";
+    this.extraData1Info = "";
+    this.extraData2     = "1";
+    this.extraData2Info = "";
     this.supplier = {
-      'materials' : '',
       'company' : '',
+      'materials' : '',
       'productCode' : '',
       'countryOfOrigin' : '',
+      'govtManaged' : false,
+      'certType' : 'None',
+      
+      // All optional after
+      'site' : [],
       'sanipesWebsite' : '',
       'companyWebsite' : '',
       'companyCertificate' : '',
       'fishSpecies' : '',
-      'iucnStatus' : '',
       'speciesCertification' : '',
+      'iucnStatus' : '',
       'certificatSupplied' : '',
       'auditRecordSupplied' : '',
       'qms' : '',
-      'govtManaged' : '',
-      'certType' : '',
-      'supplierSite' : '',
       'expiryDates' : '',
       'link' : '',
+      'catchMethod' : '',
       'faoArea' : '',
       'faoDesc' : '',
       'faoLink' : '',
-      'catchMethod' : ''
-    }
+      extraCerts : [],
+      extraData1 : [],
+      extraData2 : []
+    };
   }
 }
 
 export default angular.module('SupplierAdd', [
-  angularMeteor, inputText, inputChoice, uploadBegin
+  angularMeteor, linkText, linkModal, inputText, inputChoice, uploadBegin
 ])
 .service('ExcelParser', ExcelParser)
 .component('supplierAdd',

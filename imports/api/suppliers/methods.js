@@ -6,7 +6,8 @@ function calculateScore(supplier) {
   var score = 0;
   switch (supplier['certType'])
   {
-    case 'IFFO' : case 'MSC'  :
+    case 'IFFO' : case 'MSC' :
+    case 'ASC' : case 'RTRS' :
     {
       score = 70;
       break;
@@ -132,8 +133,45 @@ function scoreStats() {
 }
 
 function certStats() {
+//  let query = [
+//    {$group   : {_id : '$certType', count : {$sum : 1}}}
+//  ]
   let query = [
-    {$group   : {_id : '$certType', count : {$sum : 1}}}
+    {$project : {
+//      type : {$cond : {if : {$eq:["$govtManaged", true]}, then:"Government", else:"$certType"}}
+      type : {$cond : {
+        if : {$eq:["$govtManaged", true]}, then:"Government", 
+        else: {
+          if : {$or : [{$eq:["certType", "MSC"]}, {$eq:["certType", "IFFO"]}, {$eq:["certType", "RTSC"]}]},
+          then : "$certType", else : {$literal : "Uncertified"}
+        }
+      }}
+    }},
+    {$group : {_id : '$type', count : {$sum : 1}}}
+  ]
+  
+  let aggregate = (collection, query, cb) => {
+    collection.aggregate(query, cb);
+  };
+  let getStats = Meteor.wrapAsync(aggregate);
+  let stats    = getStats(Suppliers.rawCollection(), query);
+  
+  console.log(JSON.stringify(stats));
+  
+  let result = {};
+  for (var i=0; i < stats.length; i++) {
+    console.log(stats[i]._id + " = " + stats[i].count);
+    result[stats[i]._id] = stats[i].count;
+  }
+  return result;
+}
+
+function ascStats() {
+  let query = [
+    {$project : {
+      type : {$cond : {if : {$eq:["$certType","ASC"]}, then:"ASC", else:"Non ASC"}} 
+    }},
+    {$group   : {_id : '$type', count : {$sum : 1}}}
   ]
   
   let aggregate = (collection, query, cb) => {
@@ -149,9 +187,32 @@ function certStats() {
   return result;
 }
 
+function catchMethodStats() {
+  let query = [
+    {$group   : {_id : '$catchMethod', count : {$sum : 1}}}
+  ]
+  
+  let aggregate = (collection, query, cb) => {
+    collection.aggregate(query, cb);
+  };
+  let getStats = Meteor.wrapAsync(aggregate);
+  let stats    = getStats(Suppliers.rawCollection(), query);
+  
+  let result = {};
+  for (var i=0; i < stats.length; i++) {
+    if (stats[i]._id == null || stats[i]._id.length === 0) {
+      result["Unkown"] = stats[i].count;
+    }
+    else {
+      result[stats[i]._id] = stats[i].count;
+    }
+  }
+  return result;
+}
+
 if (Meteor.isServer) {
   Meteor.methods({
-    scoreStats, certStats
+    scoreStats, certStats, ascStats, catchMethodStats
   });
 }
 
