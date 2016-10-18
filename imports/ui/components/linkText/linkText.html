@@ -1,0 +1,16 @@
+<div class='has-feedback' ng-class="{'has-error' : field.$invalid}">
+  <label class='control-label' for='{{name}}'>{{label}}</label>
+  <div class="input-group">
+    <input type='text' id='{{name}}' name='{{name}}' ng-model="txtModel"
+           placeholder="{{readonly ? model : placeholder}}"
+           class='form-control' ng-required='required' ng-readonly='readonly'>
+    <input type='hidden' id='{{name}}Url' name='{{name}}Url' ng-model="urlModel">
+    <span class="input-group-btn">
+      <button class="btn btn-default" type="button" ng-click="action({callback : urlSetter})">
+        <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
+      </button>
+    </span>
+  </div>
+  <span ng-show='field.$invalid'
+        class="glyphicon glyphicon-remove form-control-feedback"></span>
+</div>
