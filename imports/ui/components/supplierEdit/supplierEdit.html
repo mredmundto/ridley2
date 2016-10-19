@@ -73,13 +73,12 @@
                readonly='$ctrl.readonly'></link-text>
   </div>
   <div class="row">
-    <div class="panel-group fill" id="accordion" role="tablist" aria-multiselectable="true"
-         ng-repeat="site in $ctrl.supplier.sites track by $index">
-      <div class="panel panel-info">
+    <div class="panel-group fill" id="accordion" role="tablist" aria-multiselectable="true">
+      <div class="panel panel-info" ng-repeat="site in $ctrl.supplier.sites track by $index">
         <div class="panel-heading" role="tab" id="siteName{{$index}}">
           <h4 class="panel-title">
             <a class="btn btn-info btn-xs" role="button" data-toggle="collapse" data-parent="#accordion" 
-               href="#site{{$index}}" aria-expanded="true" aria-controls="site{{$index}}">
+               href="#site{{$index}}" aria-expanded="false" aria-controls="site{{$index}}">
               <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
             </a>
             <input type="text" value="{{site.siteName}}" class="site-name" ng-readonly='$ctrl.readonly'>
@@ -89,7 +88,7 @@
             </a>
           </h4>
         </div>
-        <div id="site{{$index}}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+        <div id="site{{$index}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
           <div class="panel-body">
             <div class="row">
               <div class='col-md-2 form-group'>
