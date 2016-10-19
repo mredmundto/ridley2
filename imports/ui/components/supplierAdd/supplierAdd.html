@@ -23,7 +23,8 @@
             data-content='{{$ctrl.message}}' data-html='true' data-placement='bottom'>
       Submit <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
     </button>
-    <label class="btn btn-default col-md-1">
+    <label id='uploadBtn' class="btn btn-default col-md-1"
+           data-content='{{$ctrl.message}}' data-html='true' data-placement='bottom'>
       Upload <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
       <input type="file" upload-begin handler="$ctrl.upload(file)"/>
     </label>

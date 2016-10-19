@@ -37,13 +37,19 @@ class SearchCtrl
     
     if (this.criteria.run === true) {
       switch (this.criteria.searchBy) {
-        case 'byScore' : {
-          this.findByScore();
+        case 'byCertificate' : {
+          this.findByCert();
           break;
         }
         
-        case 'byCertificate' : {
-          this.findByCert();
+        case "byAsc" : {
+          this.findByAsc();
+          break;
+        }
+
+        case "byCaptureMethod" : {
+          console.log(JSON.stringify(this.criteria));
+          this.findByCaptureMethod();
           break;
         }
       }

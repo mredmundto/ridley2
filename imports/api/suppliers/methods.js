@@ -35,6 +35,17 @@ function addSupplier(supplier) {
   return Suppliers.insert(supplier);
 }
 
+function updateSupplier(supplier) {
+  calculateScore(supplier);
+  let query     = {'company' : supplier.company};
+  let updateDoc = (collection, query, doc, cb) => {
+    collection.update(query, doc, cb);
+  };
+  let update = Meteor.wrapAsync(updateDoc);
+  let count  = update(Suppliers, query, supplier);
+  return count;
+}
+
 function uploadSuppliers(records) {
   for (let i=0; i < records.length; i++) {
     addSupplier(records[i]);
@@ -133,6 +144,7 @@ function getSupplier(id) {
 
 function scoreStats() {  
   let query = [
+    {$unwind : "$sites"},
     {$project : {
       _id : {$cond : {if : {$gte : ['$score',70]}, then : 'above', else:'below'}}
     }},
@@ -154,8 +166,12 @@ function scoreStats() {
 
 function certStats() {
   let query = [
+    {$unwind : "$sites"},
     {$project : {
-      type : {$cond : {if : {$eq:["$sites.govtManaged", true]}, then:"Government", else:"$certType"}}
+      type : {$cond : [
+        {$and : [ {$eq:["$sites.certType", "None"]}, {$eq:["$sites.govtManaged", true]} ] },
+        {$literal : "Government"}, "$sites.certType"
+      ]}
     }},
     {$group : {_id : '$type', count : {$sum : 1}}}
   ]
@@ -175,8 +191,9 @@ function certStats() {
 
 function ascStats() {
   let query = [
+    {$unwind : "$sites"},
     {$project : {
-      type : {$cond : {if : {$eq:["$certType","ASC"]}, then:"ASC", else:"Non ASC"}} 
+      type : {$cond : [{$eq:["$sites.certType","ASC"]}, "ASC", "Non ASC"]} 
     }},
     {$group   : {_id : '$type', count : {$sum : 1}}}
   ]
@@ -196,7 +213,8 @@ function ascStats() {
 
 function catchMethodStats() {
   let query = [
-    {$group   : {_id : '$catchMethod', count : {$sum : 1}}}
+    {$unwind : "$sites"},
+    {$group  : {_id : '$sites.catchMethod', count : {$sum : 1}}}
   ]
   
   let aggregate = (collection, query, cb) => {
@@ -220,7 +238,7 @@ function catchMethodStats() {
 if (Meteor.isServer) {
   Meteor.methods({
     scoreStats, certStats, ascStats, catchMethodStats, 
-    addSupplier, uploadSuppliers,
+    addSupplier, updateSupplier, uploadSuppliers,
     getSupplier, findSuppliersByName, findSuppliersByScore,
     findSuppliersByCertificate, findSuppliersByAsc,
     findSuppliersByCaptureMethod, findSuppliersByMaterial

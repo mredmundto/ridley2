@@ -27,8 +27,9 @@ class GraphCtrl
                 columns: columns,
                 type : 'pie',
                 onclick: (d, i) => {
+                  let value = (d.id === 'ASC' ? 'yes' : 'no');
                   this.router.transitionTo(
-                    'home.supplierSearch', {searchBy:'byASC', value:d.id, 'run':true}
+                    'home.supplierSearch', {searchBy:'byAsc', value:value, 'run':true}
                   );
                 }
               }
@@ -55,7 +56,7 @@ class GraphCtrl
                 type : 'pie',
                 onclick: (d, i) => {
                   this.router.transitionTo(
-                    'home.supplierSearch', {searchBy:'byCatchMethod', value:d.id, 'run':true}
+                    'home.supplierSearch', {searchBy:'byCaptureMethod', value:d.id, 'run':true}
                   );
                 }
               }

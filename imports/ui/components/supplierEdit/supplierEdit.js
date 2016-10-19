@@ -8,12 +8,25 @@ import { name as linkModal } from '../linkText/linkModal';
 import { name as inputText } from '../inputText/inputText';
 import { name as inputChoice } from '../inputChoice/inputChoice';
 
+let success_popup =
+  '<h4 class="no-margin no-padding" style="display:inline-block">' +
+  '<span class="glyphicon glyphicon-ok-sign green"></span></h4>' +
+  '<h5 class="no-margin no-padding" style="display:inline-block">&nbsp;&nbsp;Updated Successfully.</h5>';
+  
+let failure_popup =
+  '<h4 class="no-margin no-padding" style="display:inline-block">' +
+  '<span class="glyphicon glyphicon-remove-sign red"></span></h4>' +
+  '<h5 class="no-margin no-padding" style="display:inline-block">&nbsp;&nbsp;Updated Failed.</h5>';
+
+
 class EditSupplierCtrl
 {
-  constructor($scope, $reactive, $stateParams) {
+  constructor($scope, $reactive, $timeout, $stateParams) {
     'ngInject';
-    this._scope        = $scope;
+    this.timer         = $timeout;
+    this.linkUrl       = '';
     this.readonly      = true;
+    this.message       = success_popup;
     this.supplierId    = $stateParams.supplierId;    
     this.extraCert      = "ISO 9001";
     this.extraCertInfo  = "";
@@ -22,6 +35,7 @@ class EditSupplierCtrl
     this.extraData2     = "1";
     this.extraData2Info = "";
     this.supplier       = null;
+    this.origSupplier   = null;
     $reactive(this).attach($scope);
   }
   
@@ -32,22 +46,27 @@ class EditSupplierCtrl
       }
     })
   }
-  
-  addExtraCertificate() {
-    this.supplier.extraCerts.push({"cert" : this.extraCert, "info" : this.extraCertInfo});
-    this.extraCert     = "ISO 9001";
-    this.extraCertInfo = "";
+
+  beginEdit() {
+    this.origSupplier = angular.copy(this.supplier);
+    this.readonly     = false;
+  }
+
+  cancelEdit() {
+    this.readonly     = true;
+    this.supplier     = this.origSupplier;
+    this.origSupplier = null;
   }
   
-  
-  openLinkModal(cb) {
+  openLinkModal(url, cb) {
+    this.linkUrl   = url;
     this.urlSetter = cb;
     angular.element('#link-modal').modal('show');
   }
   
   linkToUrl() {
-    this.urlSetter(this.newLinkUrl);
-    this.newLinkUrl = '';
+    this.urlSetter(this.linkUrl);
+    this.linkUrl = '';
   }
   
   addSite() {
@@ -102,15 +121,26 @@ class EditSupplierCtrl
   }
   
   submit() {
-//    Meteor.call('addSupplier', this.supplier, (error, result) =>
-//    {
-//      if (error) {
-//        console.log(error);
-//      }
-//      else {
-//        this.reset();
-//      }
-//    })
+    this.readonly = true;
+    this.call('updateSupplier', this.supplier, (error, result) =>
+    {
+      if (error) {
+        this.readonly = false;
+        this.message  = failure_popup;
+        angular.element('#btn-bar').popover('show');
+        this.timer(() => {
+          angular.element('#btn-bar').popover('destroy');
+        }, 1500);
+      }
+      else {
+        this.origSupplier = null;
+        this.message      = success_popup;
+        angular.element('#btn-bar').popover('show');
+        this.timer(() => {
+          angular.element('#btn-bar').popover('destroy');
+        }, 1500);
+      }
+    })
   }
 }
 

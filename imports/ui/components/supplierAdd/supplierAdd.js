@@ -170,15 +170,25 @@ class ExcelParser
 }
 
 
-let success_popup =
+let success_add_popup =
   '<h4 class="no-margin no-padding" style="display:inline-block">' +
   '<span class="glyphicon glyphicon-ok-sign green"></span></h4>' +
   '<h5 class="no-margin no-padding" style="display:inline-block">&nbsp;&nbsp;Added Successfully.</h5>';
   
-let failure_popup =
+let failure_add_popup =
   '<h4 class="no-margin no-padding" style="display:inline-block">' +
   '<span class="glyphicon glyphicon-remove-sign red"></span></h4>' +
   '<h5 class="no-margin no-padding" style="display:inline-block">&nbsp;&nbsp;Added Failed.</h5>';
+
+let success_upload_popup =
+  '<h4 class="no-margin no-padding" style="display:inline-block">' +
+  '<span class="glyphicon glyphicon-ok-sign green"></span></h4>' +
+  '<h5 class="no-margin no-padding" style="display:inline-block">&nbsp;&nbsp;Uploaded Successfully.</h5>';
+  
+let failure_upload_popup =
+  '<h4 class="no-margin no-padding" style="display:inline-block">' +
+  '<span class="glyphicon glyphicon-remove-sign red"></span></h4>' +
+  '<h5 class="no-margin no-padding" style="display:inline-block">&nbsp;&nbsp;Uploaded Failed.</h5>';
 
 class AddSupplierCtrl
 {
@@ -193,7 +203,7 @@ class AddSupplierCtrl
     this.newSiteName = '';
     this.urlSetter   = null;
     this.newLinkUrl  = '';
-    this.message     = success_popup;
+    this.message     = success_add_popup;
 
     this.extraCert      = "ISO 9001";
     this.extraCertInfo  = "";
@@ -271,10 +281,21 @@ class AddSupplierCtrl
       angular.element('#progress-modal').modal('show');
       Meteor.call('uploadSuppliers', records, (error, result) =>
       {
+        angular.element('#progress-modal').modal('hide');        
         if (error) {
-          console.log(error);
+          this.message = failure_upload_popup;
+          angular.element('#uploadBtn').popover('show');
+          this.timer(() => {
+            angular.element('#uploadBtn').popover('destroy');
+          }, 1500);
         }
-        angular.element('#progress-modal').modal('hide');
+        else {
+          this.message = success_upload_popup;
+          angular.element('#uploadBtn').popover('show');
+          this.timer(() => {
+            angular.element('#uploadBtn').popover('destroy');
+          }, 1500);
+        }
       })
     })
   }
@@ -283,19 +304,19 @@ class AddSupplierCtrl
     Meteor.call('addSupplier', this.supplier, (error, result) =>
     {
       if (error) {
-        this.message = failure_popup;
+        this.message = failure_add_popup;
         angular.element('#submitBtn').popover('show');
         this.timer(() => {
           angular.element('#submitBtn').popover('destroy');
-        }, 1000);
+        }, 1500);
       }
       else {
         this.reset();
-        this.message = success_popup;
+        this.message = success_add_popup;
         angular.element('#submitBtn').popover('show');
         this.timer(() => {
           angular.element('#submitBtn').popover('destroy');
-        }, 1000);
+        }, 1500);
       }
     })
   }
