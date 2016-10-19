@@ -44,12 +44,12 @@ angular.module('score-card', [
   })
   .state('home.graph', {
     url : '/graph',
-    template : '<graph class="col-md-10"></graph>',
+    template : '<graph></graph>',
   })
   .state('home.supplierSearch',
   {
     url: '/supplier/find',
-    template : '<supplier-find class="col-md-10"></supplier-find>',
+    template : '<supplier-find></supplier-find>',
     params : {
       searchBy : 'byName', value : '', cmp : 'eq', run : false
     }
@@ -57,7 +57,7 @@ angular.module('score-card', [
   .state('home.supplierAdd',
   {
     url: '/supplier/add',
-    template : '<supplier-add class="col-md-10"></supplier-add>'
+    template : '<supplier-add></supplier-add>'
   })
   .state('home.supplierEdit',
   {
@@ -65,12 +65,12 @@ angular.module('score-card', [
     params : {
       'supplierId' : null
     },
-    template : '<supplier-edit class="col-md-10"></supplier-edit>'
+    template : '<supplier-edit></supplier-edit>'
   })
   .state('home.admin',
   {
     url: '/admin',
-    template : '<user-admin class="col-md-10"></user-admin>'
+    template : '<user-admin></user-admin>'
   });
 })
 .run(['$state', '$rootScope', function($state, $rootScope) {

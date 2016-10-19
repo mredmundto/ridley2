@@ -18,114 +18,112 @@
 </div>
 <div class="row">
   <form name="searchForm">
-    <div class="container">
-      <div class="row">
-        <h3 class="col-md-1">Search</h3>
+    <div class="row">
+      <h3 class="col-md-1">Search</h3>
+      <span class="col-md-2 select-box">
+        <select class="form-control" ng-model="$ctrl.criteria.searchBy" 
+                ng-model="$ctrl.criteria.searchBy" ng-change="$ctrl.resetValue()">
+          <option value="byName">with Name</option>
+          <option value="byScore">with Score</option>
+          <option value="byCertificate">with Certificate</option>
+          <option value="byAsc">is ASC Certified?</option>
+          <option value="byCaptureMethod">with Capture Method</option>
+          <option value="byMaterial">with Product Type</option>
+        </select>
+      </span>
+      <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byName"'>
+        <div class="input-group">
+          <input type="text" class="form-control" ng-model="$ctrl.criteria.value"
+                 ng-keydown='$event.keyCode == 13 && $ctrl.search()' placeholder="List All">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button" ng-click="$ctrl.findByName()">
+              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            </button>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byScore"'>
         <span class="col-md-2 select-box">
-          <select class="form-control" ng-model="$ctrl.criteria.searchBy" 
-                  ng-model="$ctrl.criteria.searchBy" ng-change="$ctrl.resetValue()">
-            <option value="byName">with Name</option>
-            <option value="byScore">with Score</option>
-            <option value="byCertificate">with Certificate</option>
-            <option value="byAsc">is ASC Certified?</option>
-            <option value="byCaptureMethod">with Capture Method</option>
-            <option value="byMaterial">with Product Type</option>
+          <select class="form-control" ng-model="$ctrl.criteria.cmp">
+            <option value="eq">=</option>
+            <option value="gt">&gt;</option>
+            <option value="lt">&lt;</option>
+            <option value="gte">&gt;=</option>
+            <option value="lte">&lt;=</option>
           </select>
         </span>
-        <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byName"'>
-          <div class="input-group">
-            <input type="text" class="form-control" ng-model="$ctrl.criteria.value"
-                   ng-keydown='$event.keyCode == 13 && $ctrl.search()' placeholder="List All">
-            <span class="input-group-btn">
-              <button class="btn btn-default" type="button" ng-click="$ctrl.findByName()">
-                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-              </button>
-            </span>
-          </div>
-        </div>
-        <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byScore"'>
-          <span class="col-md-2 select-box">
-            <select class="form-control" ng-model="$ctrl.criteria.cmp">
-              <option value="eq">=</option>
-              <option value="gt">&gt;</option>
-              <option value="lt">&lt;</option>
-              <option value="gte">&gt;=</option>
-              <option value="lte">&lt;=</option>
-            </select>
-          </span>
-          <div class="input-group col-md-5">
-            <input type="text" class="form-control" ng-model="$ctrl.criteria.value">
-            <span class="input-group-btn">
-              <button class="btn btn-default" type="button" 
-                      ng-disabled='$ctrl.criteria.value === ""' ng-click="$ctrl.findByScore()">
-                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-              </button>
-            </span>
-          </div>
-        </div>
-        <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byCertificate"'>
-          <span class="col-md-2 select-box">
-            <select class="form-control" ng-model="$ctrl.criteria.value">
-              <option value="None" selected>None</option>
-              <option value="IFFO">IFFO</option>
-              <option value="MSC">MSC</option>
-              <option value="ASC">ASC</option>
-              <option value="RTRS">RTRS
-            </select>
-          </span>
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="button" ng-click="$ctrl.findByCert()">
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-            </button>
-          </span>
-        </div>
-        <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byAsc"'>
-          <span class="col-md-2 select-box">
-            <select class="form-control" ng-model="$ctrl.criteria.value">
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-            </select>
-          </span>
+        <div class="input-group col-md-5">
+          <input type="text" class="form-control" ng-model="$ctrl.criteria.value">
           <span class="input-group-btn">
             <button class="btn btn-default" type="button" 
-                    ng-disabled='searchForm.$invalid' ng-click="$ctrl.findByAsc()">
+                    ng-disabled='$ctrl.criteria.value === ""' ng-click="$ctrl.findByScore()">
               <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
             </button>
           </span>
         </div>
-        <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byCaptureMethod"'>
-          <span class="col-md-4 select-box">
-            <select class="form-control" ng-model="$ctrl.criteria.value">
-              <option value="Wild Caught">Wild Caught</option>
-              <option value="Farmed">Farmed</option>
-              <option value="By Product / Trimming">By Product / Trimming</option>
-            </select>
-          </span>
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="button" ng-click="$ctrl.findByCaptureMethod()">
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-            </button>
-          </span>
-        </div>
-        <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byMaterial"'>
-          <span class="col-md-7 select-box">
-            <select class="form-control" ng-model="$ctrl.criteria.value">
-              <option value="Fish Meal">Fish Meal</option>
-              <option value="Fish Oil">Fish Oil</option>
-              <option value="DFS (Dried Fish Soluble)">DFS (Dried Fish Soluble)</option>
-              <option value="Actipal HC6 (Krill hydrolysate Concentrate)">Actipal HC6 (Krill hydrolysate Concentrate)</option>
-              <option value="Olymarc">Olymarc</option>
-              <option value="HP2">HP2</option>
-              <option value="SL5">SL5</option>
-              <option value="SPC">SPC</option>
-            </select>
-          </span>
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="button" ng-click="$ctrl.findByMaterial()">
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-            </button>
-          </span>
-        </div>
+      </div>
+      <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byCertificate"'>
+        <span class="col-md-2 select-box">
+          <select class="form-control" ng-model="$ctrl.criteria.value">
+            <option value="None" selected>None</option>
+            <option value="IFFO">IFFO</option>
+            <option value="MSC">MSC</option>
+            <option value="ASC">ASC</option>
+            <option value="RTRS">RTRS
+          </select>
+        </span>
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" ng-click="$ctrl.findByCert()">
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+          </button>
+        </span>
+      </div>
+      <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byAsc"'>
+        <span class="col-md-2 select-box">
+          <select class="form-control" ng-model="$ctrl.criteria.value">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </span>
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" 
+                  ng-disabled='searchForm.$invalid' ng-click="$ctrl.findByAsc()">
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+          </button>
+        </span>
+      </div>
+      <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byCaptureMethod"'>
+        <span class="col-md-4 select-box">
+          <select class="form-control" ng-model="$ctrl.criteria.value">
+            <option value="Wild Caught">Wild Caught</option>
+            <option value="Farmed">Farmed</option>
+            <option value="By Product / Trimming">By Product / Trimming</option>
+          </select>
+        </span>
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" ng-click="$ctrl.findByCaptureMethod()">
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+          </button>
+        </span>
+      </div>
+      <div class="col-md-6 form-part" ng-show='$ctrl.criteria.searchBy == "byMaterial"'>
+        <span class="col-md-7 select-box">
+          <select class="form-control" ng-model="$ctrl.criteria.value">
+            <option value="Fish Meal">Fish Meal</option>
+            <option value="Fish Oil">Fish Oil</option>
+            <option value="DFS (Dried Fish Soluble)">DFS (Dried Fish Soluble)</option>
+            <option value="Actipal HC6 (Krill hydrolysate Concentrate)">Actipal HC6 (Krill hydrolysate Concentrate)</option>
+            <option value="Olymarc">Olymarc</option>
+            <option value="HP2">HP2</option>
+            <option value="SL5">SL5</option>
+            <option value="SPC">SPC</option>
+          </select>
+        </span>
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" ng-click="$ctrl.findByMaterial()">
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+          </button>
+        </span>
       </div>
     </div>
   </form>
