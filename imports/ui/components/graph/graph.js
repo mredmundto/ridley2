@@ -55,8 +55,16 @@ class GraphCtrl
                 columns: columns,
                 type : 'pie',
                 onclick: (d, i) => {
+                  let value = d.id;
+                  if (d.id.startsWith('Farmed')) {
+                    value = 'Farmed';
+                  }
+                  else if (d.id.startsWith('Byproduct')) {
+                    value = 'Byproduct';
+                  }
+                  
                   this.router.transitionTo(
-                    'home.supplierSearch', {searchBy:'byCaptureMethod', value:d.id, 'run':true}
+                    'home.supplierSearch', {searchBy:'byCaptureMethod', value:value, 'run':true}
                   );
                 }
               }

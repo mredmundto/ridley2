@@ -98,7 +98,7 @@ let extraInfo1 = [
   "Manufacturers Declaration statements required for export to NZ in shipping docs",
   "Import statements are in shipping docs",
   "Ruminant statement requirements are in shipping docs",
-  "By product/Trimmings of processing",
+  "Byproduct/Trimmings of processing",
   "Percentage of By product/Trimmings",
   "Farmed material",
   "Salmonella Testing stated",

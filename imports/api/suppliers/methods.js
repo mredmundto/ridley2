@@ -116,12 +116,72 @@ function findSuppliersByAsc(hasAsc) {
 }
 
 function findSuppliersByCaptureMethod(cMethod) {
-  if (cMethod == null || cMethod.length == 0) {
-    return null;
+  let records = Suppliers.find().fetch();
+  let result  = []
+  
+  if (cMethod === 'Wild Caught')
+  {
+    for (let i=0; i < records.length; i++) {
+      let r = records[i];
+      for (var j=0; j < r.sites.length; j++) {
+        let s   = records[i].sites[j];
+        let add = true; 
+
+        for (var k=0; k < s.extraData1.length; k++) {
+          let d = s.extraData1[k];
+          if (Object.keys(d)[0] === 'Byproduct / Trimmings of processing' ||
+              Object.keys(d)[0] === 'Farmed material') {
+            add = false;
+            break;
+          }
+        }
+
+        if (add) 
+          result.push(r);
+      }
+    }
   }
-  else {
-    return Suppliers.find({'sites.catchMethod' : cMethod}).fetch();
+  else if (cMethod === 'Byproduct')
+  {
+    for (let i=0; i < records.length; i++) {
+      let r = records[i];
+      for (var j=0; j < r.sites.length; j++) {
+        let s = records[i].sites[j];
+        for (var k=0; k < s.extraData1.length; k++) {
+          let d = s.extraData1[k];
+          if (Object.keys(d)[0].startsWith(cMethod)) {
+            result.push(r);
+            break;
+          }
+        }
+      }
+    }
   }
+  else if (cMethod === 'Farmed')
+  {
+    for (let i=0; i < records.length; i++) {
+      let r = records[i];
+      for (var j=0; j < r.sites.length; j++) {
+        let s     = records[i].sites[j];
+        let valid = false; 
+        for (var k=0; k < s.extraData1.length; k++) {
+          let d = s.extraData1[k];
+          if (Object.keys(d)[0].startsWith('Farmed')) {
+            valid = true;
+          }
+          else if (Object.keys(d)[0].startsWith('Byproduct')) {
+            valid = false;
+            break;
+          }
+        }
+        
+        if (valid)
+          result.push(r);
+      }
+    }
+  }
+
+  return result;
 }
 
 function findSuppliersByMaterial(material) {
@@ -212,26 +272,58 @@ function ascStats() {
 }
 
 function catchMethodStats() {
-  let query = [
-    {$unwind : "$sites"},
-    {$group  : {_id : '$sites.catchMethod', count : {$sum : 1}}}
-  ]
+  let records = Suppliers.find().fetch();
   
-  let aggregate = (collection, query, cb) => {
-    collection.aggregate(query, cb);
-  };
-  let getStats = Meteor.wrapAsync(aggregate);
-  let stats    = getStats(Suppliers.rawCollection(), query);
-  
-  let result = {};
-  for (var i=0; i < stats.length; i++) {
-    if (stats[i]._id == null || stats[i]._id.length === 0) {
-      result["Unknown"] = stats[i].count;
-    }
-    else {
-      result[stats[i]._id] = stats[i].count;
+  let typeA = 0, typeB = 0, typeC = 0;
+  for (let i=0; i < records.length; i++) {
+    let r = records[i];
+    for (var j=0; j < r.sites.length; j++) {
+      let s    = records[i].sites[j];
+      let type = ''; 
+      for (var k=0; k < s.extraData1.length; k++) {
+        let d = s.extraData1[k];
+        switch (Object.keys(d)[0]) {
+          case 'Byproduct / Trimmings of processing' : {
+            type = 'A';
+            end = true;
+            break;
+          }
+
+          case 'Farmed material' : {
+            type = 'B';
+            break;
+          }
+        }
+
+        if (type == 'A') {
+          break;
+        }
+      }
+
+      switch (type) {
+        case 'A' : {
+          typeA++;
+          break;
+        }
+
+        case 'B' : {
+          typeB++;
+          break;
+        }
+
+        default : {
+          typeC++;
+          break;
+        }
+      }
     }
   }
+  
+  let result = {
+    'Byproduct / Trimmings of processing' : typeA,
+    'Farmed material' : typeB,
+    'Wild Caught' : typeC
+  };
   return result;
 }
 
