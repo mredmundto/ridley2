@@ -99,7 +99,7 @@ let extraInfo1 = [
   "Import statements are in shipping docs",
   "Ruminant statement requirements are in shipping docs",
   "Byproduct/Trimmings of processing",
-  "Percentage of By product/Trimmings",
+  "Percentage of Byproduct/Trimmings",
   "Farmed material",
   "Salmonella Testing stated",
   "Shigella testing stated",

@@ -129,8 +129,11 @@ function findSuppliersByCaptureMethod(cMethod) {
 
         for (var k=0; k < s.extraData1.length; k++) {
           let d = s.extraData1[k];
-          if (Object.keys(d)[0] === 'Byproduct / Trimmings of processing' ||
-              Object.keys(d)[0] === 'Farmed material') {
+//          if (Object.keys(d)[0] === 'Byproduct / Trimmings of processing' ||
+//              Object.keys(d)[0] === 'Farmed material') {
+          if (d.criterion !== undefined &&
+              (d.criterion === 'Byproduct / Trimmings of processing' ||
+               d.criterion === 'Farmed material')) {
             add = false;
             break;
           }
@@ -149,7 +152,7 @@ function findSuppliersByCaptureMethod(cMethod) {
         let s = records[i].sites[j];
         for (var k=0; k < s.extraData1.length; k++) {
           let d = s.extraData1[k];
-          if (Object.keys(d)[0].startsWith(cMethod)) {
+          if (d.criterion !== undefined && d.criterion.startsWith(cMethod)) {
             result.push(r);
             break;
           }
@@ -166,10 +169,10 @@ function findSuppliersByCaptureMethod(cMethod) {
         let valid = false; 
         for (var k=0; k < s.extraData1.length; k++) {
           let d = s.extraData1[k];
-          if (Object.keys(d)[0].startsWith('Farmed')) {
+          if (d.criterion.startsWith('Farmed')) {
             valid = true;
           }
-          else if (Object.keys(d)[0].startsWith('Byproduct')) {
+          else if (d.criterion !== undefined && d.criterion.startsWith('Byproduct')) {
             valid = false;
             break;
           }
@@ -282,21 +285,12 @@ function catchMethodStats() {
       let type = ''; 
       for (var k=0; k < s.extraData1.length; k++) {
         let d = s.extraData1[k];
-        switch (Object.keys(d)[0]) {
-          case 'Byproduct / Trimmings of processing' : {
-            type = 'A';
-            end = true;
-            break;
-          }
-
-          case 'Farmed material' : {
-            type = 'B';
-            break;
-          }
-        }
-
-        if (type == 'A') {
+        if (d.criterion !== undefined && d.criterion.startsWith('Byproduct')) {
+          type = 'A';
           break;
+        }
+        else if (d.criterion !== undefined && d.criterion.startsWith('Farmed')) {
+          type = 'B';
         }
       }
 
