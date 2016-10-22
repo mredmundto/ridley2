@@ -21,13 +21,14 @@ let failure_popup =
 
 class EditSupplierCtrl
 {
-  constructor($scope, $reactive, $timeout, $stateParams) {
+  constructor($scope, $reactive, $timeout, $stateParams, $userRole) {
     'ngInject';
-    this.timer         = $timeout;
-    this.linkUrl       = '';
-    this.readonly      = true;
-    this.message       = success_popup;
-    this.supplierId    = $stateParams.supplierId;    
+    this.$userRole      = $userRole;
+    this.timer          = $timeout;
+    this.linkUrl        = '';
+    this.readonly       = true;
+    this.message        = success_popup;
+    this.supplierId     = $stateParams.supplierId;    
     this.extraCert      = "ISO 9001";
     this.extraCertInfo  = "";
     this.extraData1     = "1";
@@ -45,6 +46,10 @@ class EditSupplierCtrl
         this.supplier = result;
       }
     })
+  }
+
+  isAdmin() {
+    return this.$userRole.isAdmin();
   }
 
   beginEdit() {
@@ -101,7 +106,7 @@ class EditSupplierCtrl
   addExtraData1(site) {
     let value = SupplierUtils.getExtraData1Criterion(parseInt(this.extraData1));
     site.extraData1.push({"criterion" : value, "info" : this.extraData1Info});
-    this.extraData1     = "1";
+    this.extraData1     = "0";
     this.extraData1Info = "";
   }
   
@@ -112,7 +117,7 @@ class EditSupplierCtrl
   addExtraData2(site) {
     let value = SupplierUtils.getExtraData2Criterion(parseInt(this.extraData2));
     site.extraData2.push({"criterion" : value, "info" : this.extraData2Info});
-    this.extraData2     = "1";
+    this.extraData2     = "0";
     this.extraData2Info = "";
   }
   

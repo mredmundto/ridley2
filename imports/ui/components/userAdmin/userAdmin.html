@@ -11,14 +11,15 @@
                   <label for="username" class="col-sm-3 control-label">User Name</label>
                   <div class="col-sm-7">
                     <input type="text" class="form-control" id="username" placeholder="User Name"
-                           ng-model='$ctrl.newUser.username'>
+                           ng-model='$ctrl.newUser.username' required>
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="password" class="col-sm-3 control-label">Password</label>
                   <div class="col-sm-7">
-                    <input type="password" class="form-control" id="password" placeholder="Password"
-                           ng-model='$ctrl.newUser.password'>
+                    <input type="password" class="form-control" id="password" 
+                           placeholder="Password" ng-model='$ctrl.newUser.password' 
+                           ng-minlength="pwdMinLength" ng-maxlength="pwdMaxLength" required>
                   </div>
                 </div>
                 <div class="form-group">
@@ -32,7 +33,8 @@
                 </div>
               </section>
               <section class="model-btn">
-                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click='$ctrl.addUser()'>Create</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" 
+                        ng-click='$ctrl.addUser()' ng-disabled="createUserForm.$invalid">Create</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
               </section>
             </form>
@@ -49,13 +51,14 @@
         <div class="panel panel-primary">
           <div class="panel-heading">Change Password</div>
           <div class="panel-body">
-            <form name="createUserForm" class="form-horizontal">
+            <form name="changePwdForm" class="form-horizontal">
               <section ng-show="$ctrl.isAdmin() && !$ctrl.isMyself()">
                 <div class="form-group">
                   <label for="password" class="col-sm-3 control-label">Password</label>
                   <div class="col-sm-7">
-                    <input type="password" class="form-control" id="password" placeholder="Password"
-                           ng-model='$ctrl.newUser.password'>
+                    <input type="password" name="userNewPwd" class="form-control" placeholder="Password"
+                           ng-model='$ctrl.pwdInfo.newPwd' ng-required="$ctrl.isAdmin()"
+                           ng-minlength="pwdMinLength" ng-maxlength="pwdMaxLength">
                   </div>
                 </div>
               </section>
@@ -63,22 +66,30 @@
                 <div class="form-group">
                   <label for="password" class="col-sm-4 control-label">Current Password</label>
                   <div class="col-sm-7">
-                    <input type="password" class="form-control" required
-                           placeholder="Current Password" ng-model='$ctrl.pwdInfo.oldPwd'>
+                    <input type="password" name="oldPwd" class="form-control" required
+                           placeholder="Current Password" ng-model='$ctrl.pwdInfo.oldPwd'
+                           ng-minlength="pwdMinLength" ng-maxlength="pwdMaxLength">
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="password" class="col-sm-4 control-label">New Password</label>
                   <div class="col-sm-7">
-                    <input type="password" class="form-control" required
-                           placeholder="New Password" ng-model='$ctrl.pwdInfo.newPwd'>
+                    <input type="password" name="newPwd" class="form-control" required
+                           placeholder="New Password" ng-model='$ctrl.pwdInfo.newPwd'
+                           ng-minlength="pwdMinLength" ng-maxlength="pwdMaxLength">
                   </div>
                 </div>
               </section>
               <section class="model-btn">
-                <button type="button" class="btn btn-primary" data-dismiss="modal"
-                        ng-click='$ctrl.resetPwd()'>Change</button>
+                <!--<button type="button" class="btn btn-primary" data-dismiss="modal"-->
+                <button type="button" class="btn btn-primary" ng-click='$ctrl.resetPwd()'
+                        ng-disabled="$ctrl.canChangePwd(changePwdForm)">Change</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              </section>
+              <section>
+                <span ng-show="$ctrl.failReason" class="text-danger glyphicon glyphicon-remove center-block">
+                  {{$ctrl.failReason}}
+                </span>
               </section>
             </form>
           </div>

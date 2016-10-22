@@ -7,8 +7,11 @@ class UserAdminCtrl
   constructor($scope, $state, $reactive, $userRole)
   {
     'ngInject';
+    $scope.pwdMinLength = 6;
+    $scope.pwdMaxLength = 12;
+
     this.$scope     = $scope;
-    this.$userRole  = $userRole;
+    this.$userRole  = $userRole;    
     this.allUsers   = [];
     this.failReason = null;
     this.failDetail = null;
@@ -23,6 +26,20 @@ class UserAdminCtrl
       'newPwd' : ''
     };
     $reactive(this).attach($scope);
+  }
+    
+  canChangePwd(form) {
+    if (this.isAdmin()) {
+      if (this.isMyself()) {
+        return form.oldPwd.$invalid || form.newPwd.$invalid;
+      }
+      else {
+        return form.userNewPwd.$invalid;
+      }
+    }
+    else {
+      return form.oldPwd.$invalid || form.newPwd.$invalid;
+    }
   }
     
   isAdmin() {
@@ -63,38 +80,43 @@ class UserAdminCtrl
     
   changePwd(username) {
     this.pwdInfo.username = username;
+    this.pwdInfo.oldPwd   = '';
+    this.pwdInfo.newPwd   = '';
+    this.failReason       = null;
   }
     
   resetPwd() {
     if (this.isMyself())
     {
+      var ctrl = this;
       Accounts.changePassword(this.pwdInfo.oldPwd, this.pwdInfo.newPwd, (err) => {
-        this.pwdInfo  = {
-          'username' : '',
-          'oldPwd' : '',
-          'newPwd' : ''
-        };
-        
         if (err) {
-          this.failReason = "Change Password";
-          this.failDetail = "Failed to change password";
-          angular.element('#opStatusModal').modal('show');
+          if (err.reason !== undefined && err.reason.length > 0) {
+            ctrl.failReason = err.reason;
+          }
+          else {
+            ctrl.failReason = "Failed to change password";
+          }
+          ctrl.$scope.$digest();
+        }
+        else {
+          angular.element('#changePwdModal').modal('hide');
         }
       });
     }
     else
     {
-      this.call('resetPwd', this.newUser.username, this.newUser.password, (error) => {
-        this.newUser  = {
-          'username' : '',
-          'password' : '',
-          'role' : 'user',
-        };
-
-        if (error != undefined) {
-          this.failReason = error.reason;
-          this.failDetail = error.details;
-          angular.element('#opStatusModal').modal('show');
+      this.call('resetPwd', this.pwdInfo.username, this.pwdInfo.newPwd, (error) => {
+        if (error) {
+          if (error.reason !== undefined && error.reason.length > 0) {
+            this.failReason = error.reason;
+          }
+          else {
+            this.failReason = "Failed to change password";
+          }
+        }
+        else {
+          angular.element('#changePwdModal').modal('hide');
         }
       });
     }

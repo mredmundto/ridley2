@@ -12,7 +12,7 @@
         <li><a ui-sref="home.admin">Administration</a></li>
         <li class="divider"></li>
         <li><a href="/home/supplier/find">Find Supplier</a></li>
-        <li><a href="/home/supplier/add">Add Supplier</a></li>
+        <li ng-hide="!$ctrl.isAdmin()"><a href="/home/supplier/add">Add Supplier</a></li>
         <li class="divider"></li>
         <li><a href="#" ng-click="$ctrl.logout()">Logout</a></li>
       </ul>

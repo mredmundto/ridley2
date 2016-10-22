@@ -26,6 +26,9 @@ function calculateScore(supplier) {
     let extraCertScore = site.extraCerts.length;
     extraCertScore = (extraCertScore < 6) ? extraCertScore : 5;
     score += extraCertScore;
+    if (score > 100) {
+      score = 100;
+    }
     site['score'] = score;
   }
 }
@@ -129,8 +132,6 @@ function findSuppliersByCaptureMethod(cMethod) {
 
         for (var k=0; k < s.extraData1.length; k++) {
           let d = s.extraData1[k];
-//          if (Object.keys(d)[0] === 'Byproduct / Trimmings of processing' ||
-//              Object.keys(d)[0] === 'Farmed material') {
           if (d.criterion !== undefined &&
               (d.criterion === 'Byproduct / Trimmings of processing' ||
                d.criterion === 'Farmed material')) {
@@ -192,7 +193,8 @@ function findSuppliersByMaterial(material) {
     return null;
   }
   else {
-    return Suppliers.find({'materials' : material}).fetch();
+    material = material + '.*';
+    return Suppliers.find({'materials' : {$regex : new RegExp(material, "i")}}).fetch();
   }
 }
 
