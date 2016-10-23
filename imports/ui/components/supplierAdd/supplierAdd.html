@@ -16,6 +16,23 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id='opStatusModal' tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body ">
+        <div class="panel panel-danger">
+          <div class="panel-heading">{{$ctrl.failOp}}</div>
+          <div class="panel-body">
+            <section>{{$ctrl.failReason}}</section>
+            <section class="model-btn">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <link-modal model="$ctrl.newLinkUrl" action="$ctrl.linkToUrl()"></link-modal>
 <form name='createForm' class="container-fluid" novalidate>
   <div class="row btn-bar extra-bottom-padding">

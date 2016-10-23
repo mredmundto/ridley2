@@ -10,6 +10,36 @@ import { name as inputText } from '../inputText/inputText';
 import { name as inputChoice } from '../inputChoice/inputChoice';
 
 
+function getCellValue(cell) {
+  if (cell.t === 'n') {
+//    let v = cell.v.toString().trim();
+//    let w = cell.w.trim();
+//    
+//    if (v !== w) {
+//      return getJsDateFromExcel(cell.v);
+//    }
+//    else {
+//      return cell.v;
+//    }
+    return cell.w.trim();
+  } 
+  else {
+    return cell.v.trim();
+  }
+}
+
+function getValueAsLink(cell) {
+  let value = {'text' : cell.v, 'url' : ''};
+  if (cell.l !== undefined && cell.l.Target !== undefined) {
+    value.url = cell.l.Target;
+  }
+  return value;
+}
+
+function getJsDateFromExcel(excelDate) {
+	return new Date((excelDate - (25567 + 1))*86400*1000);
+}
+
 class ExcelParser
 {
   constuctor() {}
@@ -22,7 +52,7 @@ class ExcelParser
       reader.onload = function(e)
       {
         var data = e.target.result;
-        var workbook = XLSX.read(data, {type: 'binary'});
+        var workbook = XLSX.read(data, {type:'binary'});
 
         var sheetName = workbook.SheetNames[0];
         var worksheet = workbook.Sheets[sheetName];
@@ -47,7 +77,17 @@ class ExcelParser
           if (row === '1') {
             let label = worksheet[z].v.trim();
             colLabels[col] = label;
-            colFields[col] = SupplierUtils.labelToField(label);
+            
+            let field = SupplierUtils.labelToField(label);
+            if (field === undefined) {
+              if (SupplierUtils.extraCertIdx(label) < 0 &&
+                  SupplierUtils.extraData1Idx(label) < 0 &&
+                  SupplierUtils.extraData2Idx(label) < 0) {
+                cb({msg : "Unknown column " + label}, undefined);
+                return;
+              }
+            }
+            colFields[col] = field;
             
             if (SupplierUtils.isKeyField(label)) {
               keyColumns.push(col);
@@ -57,6 +97,7 @@ class ExcelParser
             }
           }
           else {
+            // Process data rows
             if (currentRow != row) {
               supplier.sites.push(site);                            
               supplier = SupplierUtils.createSupplier();
@@ -66,12 +107,9 @@ class ExcelParser
             
             let label = colLabels[col];
             let field = colFields[col];
-            let value = worksheet[z].v;
-            if (typeof value === 'string') {
-              value = value.trim();
-            }
-            
+                        
             if (SupplierUtils.isKeyField(label)) {
+              let value = getCellValue(worksheet[z]);
               supplier[field] = value;
               if (!records[value]) {
                 records[value] = supplier;
@@ -81,15 +119,16 @@ class ExcelParser
             }
             else if (SupplierUtils.isCommonField(label)) {
               if (SupplierUtils.isLinkField(field)) {
-                supplier[field] = SupplierUtils.parseLink(field, value);
+                supplier[field] = getValueAsLink(worksheet[z]);
               } else {
-                supplier[field] = value;
+                supplier[field] = getCellValue(worksheet[z]);
               }
             }
             else if (SupplierUtils.isFishScoreField(field)) {
-              site[field] = SupplierUtils.parseFishScore(value);
+              site[field] = SupplierUtils.parseFishScore(worksheet[z].v);
             }
             else if (SupplierUtils.extraCertIdx(label) > -1) {
+              let value = getCellValue(worksheet[z]);
               if (value) {
                 let cert = {};
                 if (typeof value === 'string') {
@@ -105,6 +144,7 @@ class ExcelParser
               }
             }
             else if (SupplierUtils.extraData1Idx(label) > -1) {
+              let value = getCellValue(worksheet[z]);
               if (value) {
                 let xData = {};
                 if (typeof value === 'string') {
@@ -121,6 +161,7 @@ class ExcelParser
               }
             }
             else if (SupplierUtils.extraData2Idx(label) > -1) {
+              let value = getCellValue(worksheet[z]);
               if (value) {
                 let xData = {};
                 if (typeof value === 'string') {
@@ -136,10 +177,11 @@ class ExcelParser
               }
             }
             else {
-              if (value) {              
+              let value = getCellValue(worksheet[z]);
+              if (value) {
                 if (typeof value === 'string' && value.length > 0) {
                   if (SupplierUtils.isLinkField(field)) {
-                    site[field] = SupplierUtils.parseLink(field, value);
+                    site[field] = getValueAsLink(worksheet[z]);
                   }
                   else {
                     site[field] = value;
@@ -162,7 +204,7 @@ class ExcelParser
         Object.keys(records).forEach((key, idx) => {
           result.push(records[key]);
         });
-        cb(result);
+        cb(undefined, result);
       };
       reader.readAsBinaryString(file);
     }
@@ -212,6 +254,10 @@ class AddSupplierCtrl
     this.extraData2     = "1";
     this.extraData2Info = "";
     this.supplier = SupplierUtils.createSupplier();
+    
+    this.failOp     = null;
+    this.failReason = null;
+    
     $reactive(this).attach($scope);
   }
   
@@ -277,26 +323,36 @@ class AddSupplierCtrl
   }
   
   upload(file) {
-    this.ExcelParser.parse(file, this.fieldMap, (records) => {
-      angular.element('#progress-modal').modal('show');
-      Meteor.call('uploadSuppliers', records, (error, result) =>
-      {
-        angular.element('#progress-modal').modal('hide');        
-        if (error) {
-          this.message = failure_upload_popup;
-          angular.element('#uploadBtn').popover('show');
-          this.timer(() => {
-            angular.element('#uploadBtn').popover('destroy');
-          }, 1500);
-        }
-        else {
-          this.message = success_upload_popup;
-          angular.element('#uploadBtn').popover('show');
-          this.timer(() => {
-            angular.element('#uploadBtn').popover('destroy');
-          }, 1500);
-        }
-      })
+    this.ExcelParser.parse(file, this.fieldMap, (error, records) => {
+      if (error !== undefined) {
+        console.log(JSON.stringify(error));
+        this.failOp     = "Upload File";
+        this.failReason = error.msg;
+        this.timer(() => {
+          angular.element('#opStatusModal').modal('show');
+        }, 0);
+      }
+      else {      
+        angular.element('#progress-modal').modal('show');
+        Meteor.call('uploadSuppliers', records, (error, result) =>
+        {
+          angular.element('#progress-modal').modal('hide');        
+          if (error) {
+            this.message = failure_upload_popup;
+            angular.element('#uploadBtn').popover('show');
+            this.timer(() => {
+              angular.element('#uploadBtn').popover('destroy');
+            }, 1500);
+          }
+          else {
+            this.message = success_upload_popup;
+            angular.element('#uploadBtn').popover('show');
+            this.timer(() => {
+              angular.element('#uploadBtn').popover('destroy');
+            }, 1500);
+          }
+        })
+      }
     })
   }
   

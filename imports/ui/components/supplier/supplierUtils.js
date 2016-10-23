@@ -64,6 +64,42 @@ let fishScoreFields = [
   'fishScore5'
 ];
 
+let labels = [
+  'Company / Supplier',
+  'Materials',
+  'Product Code',
+  'Country Of Origin',
+  'SANIPES Website',
+  'Company Website',
+  'Company Certificates',
+  
+  // Site specific
+  'Supplier site',
+  'Gov\'t Managed',
+  'IFFO / MSC / ASC / RTRS',
+  'MSC/IFFO/ASC/RTRS Expiry Dates',
+  'Link (IFFO/MSC/ASC/RTRS websites)',
+  'Fish Species',
+  'Species Certification',
+  'IUCN status',
+  'Ridley Species Certificate Supplied',
+  'Ridley RS Audit Record Supplied',
+  'QMS',
+  'FAO area / CCAMLR area',
+  'FAO Description of Location',
+  'FAO Link',
+  'Catching Method',
+  
+  // Fish score
+  'Is the management strategy precautionary?',
+  'Do managers follow scientific advice?',
+  'Do fishers comply?',
+  'Is the fish stock healthy?',
+  'Will the fish stock be healthy in future?',
+  'FishSource Score Link',
+  'Fishbase data'
+];
+
 let extraCerts = [
   'IFFO RS (CoC)',
   'FAO Code of Conduct for Responsible Fisheries',
@@ -119,6 +155,15 @@ let extraInfo2 = [
   
 export const SupplierUtils =
 {
+  getAllLabels : () => {
+    let labelList = [];
+    labelList = labelList.concat(labels);
+    labelList = labelList.concat(extraCerts);
+    labelList = labelList.concat(extraInfo1);
+    labelList = labelList.concat(extraInfo2);
+    return labelList;
+  },
+  
   createSupplier : () => {
     return {
       'company'            : '',

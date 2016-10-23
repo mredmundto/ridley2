@@ -1,20 +1,21 @@
 <nav class="navbar navbar-default navbar-static-top">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">
-        <img alt="Brand" src="/images/ridley-vector.svg">
-      </a>
-      <span style="margin-left: 0.5em; font-size: xx-large">Sustainability Review</span>
-    </div>
-    <div>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="/home/graph">Home</a></li>
-        <li class="divider"></li>
-        <li><a ui-sref="home.admin">Administration</a></li>
-        <li class="divider"></li>
-        <li><a href="/home/supplier/find">Find Supplier</a></li>
-        <li ng-hide="!$ctrl.isAdmin()"><a href="/home/supplier/add">Add Supplier</a></li>
-        <li class="divider"></li>
-        <li><a href="#" ng-click="$ctrl.logout()">Logout</a></li>
-      </ul>
-    </div>
+  <div class="navbar-header">
+    <a class="navbar-brand" href="#">
+      <img alt="Brand" src="/images/ridley-vector.svg">
+    </a>
+    <span style="margin-left: 0.5em; font-size: xx-large">Sustainability Review</span>
+  </div>
+  <div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/home/graph">Home</a></li>
+      <li class="divider"></li>
+      <li><a ui-sref="home.admin">Administration</a></li>
+      <li class="divider"></li>
+      <li><a href="/home/supplier/find">Find Supplier</a></li>
+      <li ng-hide="!$ctrl.isAdmin()"><a ui-sref="home.supplierAdd">Add Supplier</a></li>
+      <li ng-hide="!$ctrl.isAdmin()"><a ui-sref="home.exportData">Backup Data</a></li>
+      <li class="divider"></li>
+      <li><a href="#" ng-click="$ctrl.logout()">Logout</a></li>
+    </ul>
+  </div>
 </nav>

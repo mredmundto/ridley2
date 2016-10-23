@@ -9,9 +9,11 @@ import {name as supplierFind} from '../imports/ui/components/supplierFind/suppli
 import {name as supplierAdd} from '../imports/ui/components/supplierAdd/supplierAdd';
 import {name as supplierEdit} from '../imports/ui/components/supplierEdit/supplierEdit';
 import {name as userAdmin} from '../imports/ui/components/userAdmin/userAdmin';
+import {name as exportData} from '../imports/ui/components/exportData/exportData';
 
 angular.module('score-card', [
-  angularMeteor, uiRouter, login, home, graph, supplierFind, supplierAdd, supplierEdit, userAdmin
+  angularMeteor, uiRouter, login, home, graph, 
+  supplierFind, supplierAdd, supplierEdit, userAdmin, exportData
 ])
 .service('$userRole', function() {
   this.isAdmin = function() {
@@ -25,12 +27,7 @@ angular.module('score-card', [
   $urlRouterProvider.when('', '/login');
   $urlRouterProvider.when('/home', '/home/graph');
   $urlRouterProvider.otherwise('/login');
-  
-  // Temp route for DEV
-//  $urlRouterProvider.when('', '/login');
-//  $urlRouterProvider.when('/home', '/home/graph');
-//  $urlRouterProvider.otherwise('/home/graph');
-  
+    
   $stateProvider
   .state('login',
   {
@@ -71,6 +68,11 @@ angular.module('score-card', [
   {
     url: '/admin',
     template : '<user-admin></user-admin>'
+  })
+  .state('home.exportData',
+  {
+    url: '/exportData',
+    template : '<export-data></export-data>'
   });
 })
 .run(['$state', '$rootScope', function($state, $rootScope) {

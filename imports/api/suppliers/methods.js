@@ -207,6 +207,19 @@ function getSupplier(id) {
   return result;
 }
 
+function exportData() {  
+  let query = [
+    {$unwind : "$sites"}
+  ];
+
+  let aggregate = (collection, query, cb) => {
+    collection.aggregate(query, cb);
+  };
+  let exportData = Meteor.wrapAsync(aggregate);
+  let result     = exportData(Suppliers.rawCollection(), query);
+  return result;
+}
+
 function scoreStats() {  
   let query = [
     {$unwind : "$sites"},
@@ -329,6 +342,7 @@ if (Meteor.isServer) {
     addSupplier, updateSupplier, uploadSuppliers,
     getSupplier, findSuppliersByName, findSuppliersByScore,
     findSuppliersByCertificate, findSuppliersByAsc,
-    findSuppliersByCaptureMethod, findSuppliersByMaterial
+    findSuppliersByCaptureMethod, findSuppliersByMaterial,
+    exportData
   });
 }
