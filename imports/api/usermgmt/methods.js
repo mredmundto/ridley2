@@ -7,7 +7,6 @@ function addUser(username, password, role) {
     throw new Meteor.Error(101, 'User Exists', 'Username is already used');
   }
   
-  console.log("User added " + username);
   var userId = Accounts.createUser({'username' : username, 'email' : username});
   Accounts.setPassword(userId, password);
   Roles.addUsersToRoles(userId, [role]);

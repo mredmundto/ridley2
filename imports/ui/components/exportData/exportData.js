@@ -1,6 +1,5 @@
 import angular from 'angular';
 import angularMeteor from 'angular-meteor';
-import templateUrl from './exportData.html';
 
 import { SupplierUtils } from '../supplier/supplierUtils.js';
 
@@ -127,45 +126,37 @@ function supplierToExcelRow(array, obj) {
   }
 }
 
+function exportData() {
+  Meteor.call('exportData', (error, result) => {
+    if (!error) {
+      let data   = [];
+      let labels = SupplierUtils.getAllLabels();
 
-class ExportCtrl
-{
-  constuctor() {}
-  
-  exportData() {
-    Meteor.call('exportData', (error, result) => {
-      if (!error) {
-        let data   = [];
-        let labels = SupplierUtils.getAllLabels();
-
-        data.push(labels);
-        for (let i=0; i < result.length; i++) {
-          let row = []
-          delete result[i]._id;
-          supplierToExcelRow(row, result[i]);
-          console.log(JSON.stringify(row));
-          data.push(row);
-        }
-        
-        let book  = new Workbook()
-        let sheet = sheet_from_array_of_arrays(data);
-
-        book.SheetNames.push('Backup');
-        book.Sheets['Backup'] = sheet;
-
-        let wbout = XLSX.write(book, {bookType:'xlsx', bookSST:false, type: 'binary', cellDates : true});
-        saveAs(
-          new Blob([sheetToArrayBuffer(wbout)], {type : "application/octet-stream"}), 
-          "data-export.xlsx"
-        );
+      data.push(labels);
+      for (let i=0; i < result.length; i++) {
+        let row = []
+        delete result[i]._id;
+        delete result[i].active;
+        supplierToExcelRow(row, result[i]);
+        data.push(row);
       }
-    });
-  }
+
+      let book  = new Workbook()
+      let sheet = sheet_from_array_of_arrays(data);
+
+      book.SheetNames.push('Backup');
+      book.Sheets['Backup'] = sheet;
+
+      let wbout = XLSX.write(book, {bookType:'xlsx', bookSST:false, type: 'binary', cellDates : true});
+      saveAs(
+        new Blob([sheetToArrayBuffer(wbout)], {type : "application/octet-stream"}), 
+        "data-export.xlsx"
+      );
+    }
+  });
 }
 
 export default angular.module('ExportData', [angularMeteor])
-.component('exportData',
-{
-  templateUrl,
-  controller: ExportCtrl
+.service('$exportData', function() {
+  this.run = exportData;
 });

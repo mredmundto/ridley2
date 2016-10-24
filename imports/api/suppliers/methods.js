@@ -33,6 +33,21 @@ function calculateScore(supplier) {
   }
 }
 
+function setSupplierActive(id, active) {
+  if (id == null || id.length == 0) {
+    throw new Meteor.Error(500, 'Error 500: Not found', 'the document is not found');
+  }
+      
+  let query     = {'_id' : id};
+  let setter    = {$set : {'active' : active}};
+  let updateDoc = (collection, query, setter, cb) => {
+    collection.update(query, setter, cb);
+  };
+  let update = Meteor.wrapAsync(updateDoc);
+  let count  = update(Suppliers, query, setter);
+  return count;
+}
+
 function addSupplier(supplier) {
   calculateScore(supplier);
   return Suppliers.insert(supplier);
@@ -99,6 +114,12 @@ function findSuppliersByCertificate(type) {
   if (type == null || type.length == 0) {
     return Suppliers.find({}).fetch();
   }
+  else if ("GOVT" === type) {
+    return Suppliers.find({'sites.certType' : 'None', 'sites.govtManaged' : true}).fetch();
+  }
+  else if ("None" === type) {
+    return Suppliers.find({'sites.certType' : 'None', 'sites.govtManaged' : false}).fetch();
+  }
   else {
     return Suppliers.find({'sites.certType' : type}).fetch();
   }
@@ -119,8 +140,9 @@ function findSuppliersByAsc(hasAsc) {
 }
 
 function findSuppliersByCaptureMethod(cMethod) {
-  let records = Suppliers.find().fetch();
-  let result  = []
+  let records    = Suppliers.find().fetch();
+  let tempResult = []
+  let result     = []
   
   if (cMethod === 'Wild Caught')
   {
@@ -140,9 +162,13 @@ function findSuppliersByCaptureMethod(cMethod) {
           }
         }
 
-        if (add) 
-          result.push(r);
+        if (add && tempResult[r.company] === undefined) 
+          tempResult[r.company] = r;
       }
+    }
+    
+    for (let key in tempResult) {
+      result.push(tempResult[key]);
     }
   }
   else if (cMethod === 'Byproduct')
@@ -154,11 +180,15 @@ function findSuppliersByCaptureMethod(cMethod) {
         for (var k=0; k < s.extraData1.length; k++) {
           let d = s.extraData1[k];
           if (d.criterion !== undefined && d.criterion.startsWith(cMethod)) {
-            result.push(r);
+            tempResult[r.company] = r;
             break;
           }
         }
       }
+    }
+    
+    for (let key in tempResult) {
+      result.push(tempResult[key]);
     }
   }
   else if (cMethod === 'Farmed')
@@ -180,8 +210,12 @@ function findSuppliersByCaptureMethod(cMethod) {
         }
         
         if (valid)
-          result.push(r);
+          tempResult[r.company] = r;
       }
+    }
+    
+    for (let key in tempResult) {
+      result.push(tempResult[key]);
     }
   }
 
@@ -244,6 +278,7 @@ function scoreStats() {
 
 function certStats() {
   let query = [
+    {$match : {active : true}},
     {$unwind : "$sites"},
     {$project : {
       type : {$cond : [
@@ -269,6 +304,7 @@ function certStats() {
 
 function ascStats() {
   let query = [
+    {$match : {active : true}},
     {$unwind : "$sites"},
     {$project : {
       type : {$cond : [{$eq:["$sites.certType","ASC"]}, "ASC", "Non ASC"]} 
@@ -290,7 +326,7 @@ function ascStats() {
 }
 
 function catchMethodStats() {
-  let records = Suppliers.find().fetch();
+  let records = Suppliers.find({active : true}).fetch();
   
   let typeA = 0, typeB = 0, typeC = 0;
   for (let i=0; i < records.length; i++) {
@@ -343,6 +379,6 @@ if (Meteor.isServer) {
     getSupplier, findSuppliersByName, findSuppliersByScore,
     findSuppliersByCertificate, findSuppliersByAsc,
     findSuppliersByCaptureMethod, findSuppliersByMaterial,
-    exportData
+    exportData, setSupplierActive
   });
 }

@@ -166,6 +166,7 @@ export const SupplierUtils =
   
   createSupplier : () => {
     return {
+      'active'             : true,
       'company'            : '',
       'materials'          : '',
       'productCode'        : '',

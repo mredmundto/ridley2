@@ -325,7 +325,6 @@ class AddSupplierCtrl
   upload(file) {
     this.ExcelParser.parse(file, this.fieldMap, (error, records) => {
       if (error !== undefined) {
-        console.log(JSON.stringify(error));
         this.failOp     = "Upload File";
         this.failReason = error.msg;
         this.timer(() => {

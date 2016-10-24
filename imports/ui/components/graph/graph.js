@@ -91,8 +91,12 @@ class GraphCtrl
                 columns: columns,
                 type : 'pie',
                 onclick: (d, i) => {
+                  let value = d.id;
+                  if ("Government" === value) {
+                    value = 'GOVT';
+                  }
                   this.router.transitionTo(
-                    'home.supplierSearch', {searchBy:'byCertificate', value:d.id, 'run':true}
+                    'home.supplierSearch', {searchBy:'byCertificate', value:value, 'run':true}
                   );
                 }
               }

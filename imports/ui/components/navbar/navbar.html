@@ -13,7 +13,7 @@
       <li class="divider"></li>
       <li><a href="/home/supplier/find">Find Supplier</a></li>
       <li ng-hide="!$ctrl.isAdmin()"><a ui-sref="home.supplierAdd">Add Supplier</a></li>
-      <li ng-hide="!$ctrl.isAdmin()"><a ui-sref="home.exportData">Backup Data</a></li>
+      <li ng-hide="!$ctrl.isAdmin()"><a href="#" ng-click="$ctrl.exportData()">Backup Data</a></li>
       <li class="divider"></li>
       <li><a href="#" ng-click="$ctrl.logout()">Logout</a></li>
     </ul>

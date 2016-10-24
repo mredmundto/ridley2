@@ -68,11 +68,6 @@ angular.module('score-card', [
   {
     url: '/admin',
     template : '<user-admin></user-admin>'
-  })
-  .state('home.exportData',
-  {
-    url: '/exportData',
-    template : '<export-data></export-data>'
   });
 })
 .run(['$state', '$rootScope', function($state, $rootScope) {

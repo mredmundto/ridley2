@@ -48,7 +48,6 @@ class SearchCtrl
         }
 
         case "byCaptureMethod" : {
-          console.log(JSON.stringify(this.criteria));
           this.findByCaptureMethod();
           break;
         }

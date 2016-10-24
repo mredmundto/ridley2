@@ -3,9 +3,14 @@ import angularMeteor from 'angular-meteor';
 import templateUrl from './navbar.html';
 
 class NavCtrl {
-  constructor($state, $userRole) {
-    this.router    = $state;
-    this.$userRole = $userRole;
+  constructor($state, $userRole, $exportData) {
+    this.router      = $state;
+    this.$userRole   = $userRole;
+    this.$exportData = $exportData;
+  }
+  
+  exportData() {
+    this.$exportData.run();
   }
   
   isAdmin() {

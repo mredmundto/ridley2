@@ -48,8 +48,41 @@ class EditSupplierCtrl
     })
   }
 
+  isEditable() {
+    if (this.supplier === null)
+      return this.readonly;
+    else {
+      if (!this.supplier.active) {
+        return false;
+      }
+      else {
+        return this.readonly;
+      }
+    }
+  }
+
   isAdmin() {
     return this.$userRole.isAdmin();
+  }
+
+  toggleActive() {
+    let flag = !this.supplier.active
+    this.call('setSupplierActive', this.supplier._id, flag, (error, result) =>
+    {
+      if (error) {
+        this.readonly = false;
+        this.message  = failure_popup;        
+        this.timer(() => {
+          angular.element('#toggleActiveBtn').popover('show');
+          this.timer(() => {
+            angular.element('#toggleActiveBtn').popover('destroy');
+          }, 1500);
+        }, 0);
+      }
+      else {
+        this.supplier.active = flag;        
+      }
+    })
   }
 
   beginEdit() {
@@ -132,18 +165,22 @@ class EditSupplierCtrl
       if (error) {
         this.readonly = false;
         this.message  = failure_popup;
-        angular.element('#btn-bar').popover('show');
         this.timer(() => {
-          angular.element('#btn-bar').popover('destroy');
-        }, 1500);
+          angular.element('#editBtn').popover('show');
+          this.timer(() => {
+            angular.element('#editBtn').popover('destroy');
+          }, 1500);
+        }, 0);
       }
       else {
         this.origSupplier = null;
         this.message      = success_popup;
-        angular.element('#btn-bar').popover('show');
+        angular.element('#editBtn').popover('show');
         this.timer(() => {
-          angular.element('#btn-bar').popover('destroy');
-        }, 1500);
+          this.timer(() => {
+            angular.element('#editBtn').popover('destroy');
+          }, 1500);
+        }, 0);
       }
     })
   }
