@@ -373,11 +373,19 @@ class AddSupplierCtrl
     Meteor.call('addSupplier', this.supplier, (error, result) =>
     {
       if (error) {
-        this.message = failure_add_popup;
-        angular.element('#submitBtn').popover('show');
+        if (error.reason !== undefined) {
+          this.failReason = error.reason;
+        }
+        else if (error.msg !== undefined) {
+          this.failReason = error.msg;
+        }
+        else {
+          this.failReason = "Unknown error";
+        }
+
         this.timer(() => {
-          angular.element('#submitBtn').popover('destroy');
-        }, 1500);
+          angular.element('#opStatusModal').modal('show');
+        }, 0);
       }
       else {
         this.reset();

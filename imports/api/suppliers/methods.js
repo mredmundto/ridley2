@@ -49,6 +49,32 @@ function setSupplierActive(id, active) {
 }
 
 function addSupplier(supplier) {
+  let query = {};
+  query["company"] = supplier.company;
+
+  let count = Suppliers.find(query).count();
+  if (count > 0) {
+    let errorMsg = 
+      "Supplier " + supplier.company + " already exists";
+    throw new Meteor.Error('Duplicate Record', errorMsg);
+  }
+    
+  for (let j=0; j < supplier.sites.length; j++) {
+    query["sites"] = {
+      "$elemMatch" : {
+        "siteName" : supplier.sites[j].siteName
+      }
+    };
+
+    let count = Suppliers.find(query).count();
+    if (count > 0) {
+      let errorMsg = 
+        "Site " + supplier.sites[j].siteName +
+        " already exists";
+      throw new Meteor.Error('Duplicate Record', errorMsg);
+    }
+  }
+  
   calculateScore(supplier);
   return Suppliers.insert(supplier);
 }
