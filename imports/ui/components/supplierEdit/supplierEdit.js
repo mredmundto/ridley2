@@ -127,8 +127,9 @@ class EditSupplierCtrl
   }
   
   addExtraCertificate(site) {
-    site.extraCerts.push({"cert" : this.extraCert, "info" : this.extraCertInfo});
-    this.extraCert     = "ISO 9001";
+    let value = SupplierUtils.getExtraCert(parseInt(this.extraCert));
+    site.extraCerts.push({"cert" : value, "info" : this.extraCertInfo});
+    this.extraCert     = "0";
     this.extraCertInfo = "";
   }
   

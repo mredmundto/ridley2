@@ -101,7 +101,7 @@ let labels = [
 ];
 
 let extraCerts = [
-  'IFFO RS (CoC)',
+  'IFFO RS (CoC) / ProTerra CoC',
   'FAO Code of Conduct for Responsible Fisheries',
   'BAP',
   'BASC (Business Alliance for Secure Commerce)',
@@ -111,9 +111,11 @@ let extraCerts = [
   'Dolphin Safe',
   'FEMAS',
   'Friends of the Sea',
+  'Global Gap',
   'GMP',
+  'BSE Free',
   'HACCP',
-  'ISO 14000',
+  'ISO 14001',
   'ISO 9001:2008',
   'ISO 18001:2007',
   'ISO 22000:2005',
@@ -259,6 +261,18 @@ export const SupplierUtils =
   
   getExtraData2Criterion : (idx) => {
     return extraInfo2[idx];
+  },
+  
+  listExtraCert : () => {
+    return extraCerts;
+  },
+  
+  listExtraData1Criterion : () => {
+    return extraInfo1;
+  },
+  
+  listExtraData2Criterion : () => {
+    return extraInfo2;
   },
     
   labelToField : (label) => {

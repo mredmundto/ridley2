@@ -24,7 +24,12 @@ function getCellValue(cell) {
     return cell.w.trim();
   } 
   else {
-    return cell.v.trim();
+    if (cell.v === undefined) {
+      return '';
+    }
+    else {
+      return cell.v.trim();
+    }
   }
 }
 
@@ -107,7 +112,7 @@ class ExcelParser
             
             let label = colLabels[col];
             let field = colFields[col];
-                        
+
             if (SupplierUtils.isKeyField(label)) {
               let value = getCellValue(worksheet[z]);
               supplier[field] = value;
@@ -291,8 +296,9 @@ class AddSupplierCtrl
   }
   
   addExtraCertificate(site) {
-    site.extraCerts.push({"cert" : this.extraCert, "info" : this.extraCertInfo});
-    this.extraCert     = "ISO 9001";
+    let value = SupplierUtils.getExtraCert(parseInt(this.extraCert));
+    site.extraCerts.push({"cert" : value, "info" : this.extraCertInfo});
+    this.extraCert     = "0";
     this.extraCertInfo = "";
   }
   

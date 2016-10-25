@@ -54,7 +54,7 @@ function sheet_from_array_of_arrays(data, opts) {
 			if (range.e.c < C) range.e.c = C;
       
       let value = data[R][C];
-			let cell  = {v: ''};      
+			let cell  = {v: ''};
 			if (typeof value === 'object')  {
         if (value.url !== undefined) {
           if (value.url.length > 0) {
@@ -109,19 +109,69 @@ function sheetToArrayBuffer(s) {
 
 function supplierToExcelRow(array, obj) {
   for (let key in obj) {
-    if (typeof obj[key] === 'object') {
-      if (obj[key].url !== undefined) {
-        array.push(obj[key]);
+    if (key === 'extraCerts') {
+      let subarray = obj[key];
+      let columns  = [];
+      for (let i=0; i < SupplierUtils.listExtraCert().length; i++) {
+        columns.push('');
       }
-      else if (obj[key].cmp !== undefined) {
+
+      for (let i=0; i < subarray.length; i++) {
+        columns[SupplierUtils.extraCertIdx(subarray[i].cert)] = subarray[i].info;
+      }
+
+      for (let i=0; i < columns.length; i++) {
+        array.push(columns[i]);
+      }
+    }
+    else if (key === 'extraData1') {
+      let subarray = obj[key];
+      let columns  = [];
+      for (let i=0; i < SupplierUtils.listExtraData1Criterion().length; i++) {
+        columns.push('');
+      }
+
+      for (let i=0; i < subarray.length; i++) {
+        columns[SupplierUtils.extraData1Idx(subarray[i].criterion)] = subarray[i].info;
+      }
+
+      for (let i=0; i < columns.length; i++) {
+        array.push(columns[i]);
+      }
+    }
+    else if (key === 'extraData2') {
+      let subarray = obj[key];
+      let columns  = [];
+      for (let i=0; i < SupplierUtils.listExtraData2Criterion().length; i++) {
+        columns.push('');
+      }
+
+      for (let i=0; i < subarray.length; i++) {
+        columns[SupplierUtils.extraData2Idx(subarray[i].criterion)] = subarray[i].info;
+      }
+
+      for (let i=0; i < columns.length; i++) {
+        array.push(columns[i]);
+      }
+    }
+    else if (key !== 'score') {
+      if (typeof obj[key] === 'object') {
+        if (obj[key].url !== undefined) {
+          array.push(obj[key]);
+        }
+        else if (obj[key].cmp !== undefined) {
+          array.push(obj[key]);
+        }
+        else {
+          supplierToExcelRow(array, obj[key]);
+        }
+      }
+      else if (obj[key] !== undefined) {
         array.push(obj[key]);
       }
       else {
-        supplierToExcelRow(array, obj[key]);
+        array.push('');
       }
-    }
-    else {
-      array.push(obj[key]);
     }
   }
 }
