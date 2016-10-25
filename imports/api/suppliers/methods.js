@@ -66,7 +66,43 @@ function updateSupplier(supplier) {
 
 function uploadSuppliers(records) {
   for (let i=0; i < records.length; i++) {
-    addSupplier(records[i]);
+    for (let j=0; j < records[i].sites.length; j++) {
+      let query    = {};
+      query["company"] = records[i].company;
+      query["sites"]   = {
+        "$elemMatch" : {
+          "siteName" : records[i].sites[j].siteName
+        }
+      };
+
+      let count = Suppliers.find(query).count();
+      if (count > 0) {
+        let errorMsg = 
+          "Supplier " + records[i].company + " / Site " + records[i].sites[j].siteName +
+          " already exists";      
+        throw new Meteor.Error('Duplicate Record', errorMsg);
+      }
+    }
+  }
+  
+  for (let i=0; i < records.length; i++) {
+    let supplier = records[i];
+    let count    = Suppliers.find({"company" : supplier.company}).count();
+    if (count === 0) {
+      addSupplier(supplier);
+    }
+    else {
+      calculateScore(supplier);
+      let query     = {'company' : supplier.company};
+      let cmd       = {'$push' : {
+        'sites' : {'$each' : supplier.sites}
+      }};
+      let updateDoc = (collection, query, cmd, cb) => {
+        collection.update(query, cmd, cb);
+      };
+      let update = Meteor.wrapAsync(updateDoc);
+      update(Suppliers, query, cmd);
+    }
   }
 }
 

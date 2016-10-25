@@ -341,13 +341,21 @@ class AddSupplierCtrl
         angular.element('#progress-modal').modal('show');
         Meteor.call('uploadSuppliers', records, (error, result) =>
         {
-          angular.element('#progress-modal').modal('hide');        
+          angular.element('#progress-modal').modal('hide');
           if (error) {
-            this.message = failure_upload_popup;
-            angular.element('#uploadBtn').popover('show');
+            if (error.reason !== undefined) {
+              this.failReason = error.reason;
+            }
+            else if (error.msg !== undefined) {
+              this.failReason = error.msg;
+            }
+            else {
+              this.failReason = "Unknown error";
+            }
+            
             this.timer(() => {
-              angular.element('#uploadBtn').popover('destroy');
-            }, 1500);
+              angular.element('#opStatusModal').modal('show');
+            }, 0);
           }
           else {
             this.message = success_upload_popup;
