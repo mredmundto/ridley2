@@ -1,6 +1,209 @@
 import { Meteor } from 'meteor/meteor';
 import { Suppliers } from './collection';
 
+function evalFishScore(score, op, criterion) {
+  switch (op) {
+    case 'eq' : {
+      return score;
+    }
+    
+    case 'gt' : {
+      let expr = score + ' > ' + criterion;
+      if (eval(expr)) {
+        return score;
+      }
+      else {
+        return (score - 1);
+      }
+    }
+    
+    case 'lt' : {
+      let expr = score + ' < ' + criterion;
+      if (eval(expr)) {
+        return (score - 1);
+      }
+      else {
+        return score;
+      }
+    }
+    
+    case 'gte' : {
+      let expr = score + ' >= ' + criterion;
+      if (eval(expr)) {
+        return score;
+      }
+      else {
+        return score;
+      }
+    }
+    
+    case 'lte' : {
+      let expr = score + ' <= ' + criterion;
+      return eval(expr);
+    }
+  }
+  return false;
+}
+
+function isAscCertified(supplier) {
+  for (let i=0; i < supplier.sites.length; i++)
+  {
+    let score = 0;
+    let site  = supplier.sites[i];
+    
+    if (site.certType !== 'IFFO' && site.certType !== 'MSC' &&
+        site.certType !== 'ASC' && site.certType !== 'RTRS') {
+      continue;
+    }
+    
+    for (let j=1; j < 6; j++) {
+      let field = 'fishScore' + j;
+      switch (j) {
+        case 5 : {
+          if (score >= 24) {
+            let fishScore = parseInt(site[field].score)
+            if (fishScore >= 8) {
+              return true;
+            }
+          }
+          break;
+        }
+
+        default : {
+          score += parseInt(site[field].score);
+          break;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+function calculateFishScoreContribution(site) {
+  let score = 0;
+  for (let j=1; j < 6; j++) {
+    let field = 'fishScore' + j;
+    switch (j) {
+      case 5 : {
+        if (score >= 24) {
+          let fishScore = parseInt(site[field].score)
+          if (fishScore >= 8) {
+            return 5;
+          }
+        }
+        break;
+      }
+
+      default : {
+        score += parseInt(site[field].score);
+        break;
+      }
+    }
+  }
+  return 0;
+}
+
+function isCOAComplied(site) {
+  let count = 0;
+  for (let i=0; i < site.extraData1.length; i++) {
+    if (site.extraData1[i].criterion === "Salmonella Testing stated") {
+      count++;
+    }
+    else if (site.extraData1[i].criterion === "Shigella testing stated") {
+      count++;
+    }
+  }
+  return (count == 2);
+}
+
+function isPreShip(site) {
+  for (let i=0; i < site.extraData2.length; i++) {
+    if (site.extraData2[i].criterion === 'Pre-shipment samples sent to Ridley') {
+      return true;
+    }
+  }
+  return false;
+}
+
+function is3rdPartyTested(site) {
+  for (let i=0; i < site.extraData1.length; i++) {
+    if (site.extraData1[i].criterion === "CoA's are from 3rd party testing") {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isAntioxidantAdded(site) {
+  for (let i=0; i < site.extraData1.length; i++) {
+    if (site.extraData1[i].criterion === "Antioxidant added") {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isTraceable(site) {
+  for (let i=0; i < site.extraData2.length; i++) {
+    if (site.extraData2[i].criterion === "Evidence of traceability back to fishery/vessels") {
+      return true;
+    }
+  }
+  return false;
+}
+
+function is3rdVerified(site) {
+  for (let i=0; i < site.extraData1.length; i++) {
+    if (site.extraData1[i].criterion === "Does the supplier have 3rd party verification of compliance to human rights declaration") {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isBatchSamples(site) {
+  for (let i=0; i < site.extraData2.length; i++) {
+    if (site.extraData2[i].criterion === "Batch samples arrive with goods") {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isNotedInPaperwork(site) {
+  for (let i=0; i < site.extraData1.length; i++) {
+    if (site.extraData1[i].criterion === "If materials are treated with chemicals or pesticides this is noted in paperwork") {
+      return true;
+    }
+  }
+  return false;
+}
+
+function hasShippingDocs(site) {
+  for (let i=0; i < site.extraData1.length; i++) {
+    if (site.extraData1[i].criterion === "Ruminant statement requirements are in shipping docs") {
+      return true;
+    }
+  }
+  return false;
+}
+
+function getNCRRelatedProductScore(site) {
+  let score = 0;
+  for (let i=0; i < site.extraData2.length; i++) {
+    if (site.extraData2[i].criterion === "<1 NCR in 12 months related to products") {
+      score++;
+    }
+    else if (site.extraData2[i].criterion === "<1 NCR in 12 months related to delivery") {
+      score++;
+    }
+    else if (site.extraData2[i].criterion === "<1 DAWR Issue in previous 12 months customs/import") {
+      score++;
+    }
+  }
+  return score;
+}
+
 function calculateScore(supplier) {
   var score = 0;
   for (let i=0; i < supplier.sites.length; i++)
@@ -18,14 +221,69 @@ function calculateScore(supplier) {
       default : {
         if (site.govtManaged) {
           score = 60;
+          if (site['qms'] !== '') {
+            score += 10;
+          }
+        }
+        else if (site['qms'] !== '') {
+          score = 60;
         }
         break;
       }
     }
   
+    score += calculateFishScoreContribution(site);
+  
     let extraCertScore = site.extraCerts.length;
     extraCertScore = (extraCertScore < 6) ? extraCertScore : 5;
     score += extraCertScore;
+    
+    if (isCOAComplied(site)) {
+      score += 2;
+    }
+    
+    if (site['certificatSupplied'] !== '') {
+      score += 2;
+    }
+    
+    if (site['auditRecordSupplied'] !== '') {
+      score += 1;
+    }
+    
+    if (isPreShip(site)) {
+      score += 1;
+    }
+    
+    if (is3rdPartyTested(site)) {
+      score += 1;
+    }
+    
+    if (isAntioxidantAdded(site)) {
+      score += 1;
+    }
+    
+    if (isTraceable(site)) {
+      score += 1;
+    }
+    
+    if (is3rdVerified(site)) {
+      score += 1;
+    }
+    
+    score += getNCRRelatedProductScore(site);
+        
+    if (isBatchSamples(site)) {
+      score += 1;
+    }
+        
+    if (isNotedInPaperwork(site)) {
+      score += 1;
+    }
+        
+    if (hasShippingDocs(site)) {
+      score += 1;
+    }
+
     if (score > 100) {
       score = 100;
     }
@@ -188,17 +446,18 @@ function findSuppliersByCertificate(type) {
 }
 
 function findSuppliersByAsc(hasAsc) {
-  if (hasAsc == null || hasAsc.length == 0) {
-    return Suppliers.find({}).fetch();
-  }
-  else {
-    if (hasAsc) {
-      return Suppliers.find({'sites.certType' : 'ASC'}).fetch();
+  let result    = [];
+  let suppliers = Suppliers.find({}).fetch();
+  for (let i=0; i < suppliers.length; i++) {
+    let certified = isAscCertified(suppliers[i]);
+    if (hasAsc && certified) {
+      result.push(suppliers[i]);
     }
-    else {
-      return Suppliers.find({'sites.certType' : {$ne : 'ASC'}}).fetch();
+    else if (!hasAsc && !certified) {
+      result.push(suppliers[i]);
     }
   }
+  return result;
 }
 
 function findSuppliersByCaptureMethod(cMethod) {
@@ -365,24 +624,15 @@ function certStats() {
 }
 
 function ascStats() {
-  let query = [
-    {$match : {active : true}},
-    {$unwind : "$sites"},
-    {$project : {
-      type : {$cond : [{$eq:["$sites.certType","ASC"]}, "ASC", "Non ASC"]} 
-    }},
-    {$group   : {_id : '$type', count : {$sum : 1}}}
-  ]
-  
-  let aggregate = (collection, query, cb) => {
-    collection.aggregate(query, cb);
-  };
-  let getStats = Meteor.wrapAsync(aggregate);
-  let stats    = getStats(Suppliers.rawCollection(), query);
-  
-  let result = {};
-  for (var i=0; i < stats.length; i++) {
-    result[stats[i]._id] = stats[i].count;
+  let result    = {"ASC" : 0, "Non ASC" : 0} ;
+  let suppliers = Suppliers.find({}).fetch();
+  for (let i=0; i < suppliers.length; i++) {
+    if (isAscCertified(suppliers[i])) {
+      result["ASC"]++;
+    }
+    else {
+      result["Non ASC"]++;
+    }
   }
   return result;
 }

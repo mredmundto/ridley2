@@ -22,7 +22,7 @@
     <button id='toggleActiveBtn' class="btn btn-default col-md-1" ng-click="$ctrl.toggleActive()"
             ng-disabled="!$ctrl.readonly" ng-class='{disabled : !$ctrl.readonly}'
             data-placement='bottom' data-content='{{$ctrl.message}}' data-html='true'>
-      {{$ctrl.supplier.active ? 'Deactivate ' : 'Activiate '}}
+      {{$ctrl.supplier.active ? 'Inactivate ' : 'Activiate '}}
       <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true" 
             ng-hide="!$ctrl.supplier.active"></span>
       <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true" 
@@ -186,7 +186,7 @@
                 </div>
                 <div class="row no-margin extra-bottom-padding">
                   <div class='col-md-4'>
-                    <select class='form-control' ng-model="site.fishScore1.cmp">
+                    <select class='form-control' ng-model="site.fishScore1.cmp" ng-disabled='$ctrl.readonly'>
                       <option value='eq'>=</option>
                       <option value='gt'>&gt;</option>
                       <option value='lt'>&lt;</option>
@@ -196,7 +196,7 @@
                   </div>
                   <div class='col-md-6 no-margin'>
                     <input type='text' id='fishScore1' ng-model="site.fishScore1.score" 
-                           ng-pattern='score_pattern' readonly='$ctrl.readonly'>
+                           ng-pattern='score_pattern' ng-readonly='$ctrl.readonly'>
                   </div>
                 </div>
                 <div class="row no-margin">
@@ -204,7 +204,7 @@
                 </div>
                 <div class="row no-margin extra-bottom-padding">
                   <div class='col-md-4'>
-                    <select class='form-control' ng-model="site.fishScore2.cmp">
+                    <select class='form-control' ng-model="site.fishScore2.cmp" ng-disabled='$ctrl.readonly'>
                       <option value='eq'>=</option>
                       <option value='gt'>&gt;</option>
                       <option value='lt'>&lt;</option>
@@ -214,7 +214,7 @@
                   </div>
                   <div class='col-md-6 no-margin'>
                     <input type='text' id='fishScore2' ng-model="site.fishScore2.score"
-                           ng-pattern='score_pattern' readonly='$ctrl.readonly'>
+                           ng-pattern='score_pattern' ng-readonly='$ctrl.readonly'>
                   </div>
                 </div>
                 <div class="row no-margin">
@@ -222,7 +222,7 @@
                 </div>
                 <div class="row no-margin extra-bottom-padding">
                   <div class='col-md-4'>
-                    <select class='form-control' ng-model="site.fishScore3.cmp">
+                    <select class='form-control' ng-model="site.fishScore3.cmp" ng-disabled='$ctrl.readonly'>
                       <option value='eq'>=</option>
                       <option value='gt'>&gt;</option>
                       <option value='lt'>&lt;</option>
@@ -232,7 +232,7 @@
                   </div>
                   <div class='col-md-6 no-margin'>
                     <input type='text' id='fishScore3' ng-model="site.fishScore3.score"
-                           ng-pattern='score_pattern' readonly='$ctrl.readonly'>
+                           ng-pattern='score_pattern' ng-readonly='$ctrl.readonly'>
                   </div>
                 </div>
                 <div class="row no-margin">
@@ -240,7 +240,7 @@
                 </div>
                 <div class="row no-margin extra-bottom-padding">
                   <div class='col-md-4'>
-                    <select class='form-control' ng-model="site.fishScore4.cmp">
+                    <select class='form-control' ng-model="site.fishScore4.cmp" ng-disabled='$ctrl.readonly'>
                       <option value='eq'>=</option>
                       <option value='gt'>&gt;</option>
                       <option value='lt'>&lt;</option>
@@ -250,7 +250,7 @@
                   </div>
                   <div class='col-md-6 no-margin'>
                     <input type='text' id='fishScore4' ng-model="site.fishScore4.score"
-                           ng-pattern='score_pattern' readonly='$ctrl.readonly'>
+                           ng-pattern='score_pattern' ng-readonly='$ctrl.readonly'>
                   </div>
                 </div>
                 <div class="row no-margin">
@@ -258,7 +258,7 @@
                 </div>
                 <div class="row no-margin extra-bottom-padding">
                   <div class='col-md-4'>
-                    <select class='form-control' ng-model="site.fishScore5.cmp">
+                    <select class='form-control' ng-model="site.fishScore5.cmp" ng-disabled='$ctrl.readonly'>
                       <option value='eq'>=</option>
                       <option value='gt'>&gt;</option>
                       <option value='lt'>&lt;</option>
@@ -268,7 +268,7 @@
                   </div>
                   <div class='col-md-6 no-margin'>
                     <input type='text' id='fishScore5' ng-model="site.fishScore5.score"
-                           ng-pattern='score_pattern' readonly='$ctrl.readonly'>
+                           ng-pattern='score_pattern' ng-readonly='$ctrl.readonly'>
                   </div>
                 </div>
               </div>
