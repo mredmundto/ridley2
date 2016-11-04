@@ -204,6 +204,57 @@ function getNCRRelatedProductScore(site) {
   return score;
 }
 
+function getCaptureMethodScore(site) {
+  let score = 0;
+  for (let i=0; i < site.extraData1.length; i++) {
+    if (site.extraData1[i].criterion === "Byproduct/Trimmings of processing") {
+      score++;
+    }
+    else if (site.extraData1[i].criterion === "Farmed material") {
+      score++;
+    }
+  }
+  return score;
+}
+
+function isIUCNlassified(site) {
+  var iucnStatus = site['iucnStatus'];
+  if (iucnStatus !== undefined) {
+    iucnStatus = iucnStatus.toLowerCase();
+    if (iucnStatus === 'least concern' ||
+        iucnStatus === 'near threatened' || 
+        'vulnerable')
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+function getPercentOfByProduct(site) {
+  for (let i=0; i < site.extraData1.length; i++) {
+    if (site.extraData1[i].criterion === "Percentage of Byproduct/Trimmings") {
+      if (site.extraData1[i].info !== undefined) {
+        let str = site.extraData[1].info;
+        if (str.endsWith('%')) {
+          str = str.substring(0, str.length() - 1);
+        }
+        return parseFloat(str);
+      }
+    }
+  }
+  return 0;
+}
+
+function hasCatchMethod(site) {
+  if (site['catchMethod'] !== null &&
+      site['catchMethod'] !== undefined &&
+      site['catchMethod'] !== '') {
+    return true;
+  }
+  return false;
+}
+
 function calculateScore(supplier) {
   var score = 0;
   for (let i=0; i < supplier.sites.length; i++)
@@ -281,6 +332,21 @@ function calculateScore(supplier) {
     }
         
     if (hasShippingDocs(site)) {
+      score += 1;
+    }
+
+    if (isIUCNlassified(site)) {
+      score += 1;
+    }
+
+    let percentOfByProduct = getPercentOfByProduct(site);
+    if (!isNaN(percentOfByProduct) && percentOfByProduct > 0) {
+      score +=1 ;
+    }
+
+    score += getCaptureMethodScore(site);
+    
+    if (hasCatchMethod(site)) {
       score += 1;
     }
 
