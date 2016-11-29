@@ -283,7 +283,10 @@ export const SupplierUtils =
     if (typeof text === 'string')
     {
       let value = text.match(/\d+(\.\d+)?/g);
-      if (value.length === 0) {
+      if (value === null) {
+        throw "Invalid score format : " + text;
+      }
+      else if (value.length === 0) {
         return null;
       }
       else {
@@ -312,6 +315,9 @@ export const SupplierUtils =
             }
             
             default : {
+              if (value.length > 1) {
+                throw "Invalid score format : " + text;
+              }
               cmp = 'eq';
               break;
             }

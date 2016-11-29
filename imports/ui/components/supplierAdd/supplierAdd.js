@@ -51,8 +51,7 @@ class ExcelParser
   
   parse(file, fieldMap, cb)
   {
-    if (file != null || file != undefined)
-    {
+    if (file != null || file != undefined) {
       var reader = new FileReader();
       reader.onload = function(e)
       {
@@ -69,7 +68,7 @@ class ExcelParser
         let supplier      = SupplierUtils.createSupplier();
         let site          = SupplierUtils.createSite();
         let records       = [];
-        
+
         let currentRow = '2';
         for (z in worksheet)
         {
@@ -82,7 +81,7 @@ class ExcelParser
           if (row === '1') {
             let label = worksheet[z].v.trim();
             colLabels[col] = label;
-            
+
             let field = SupplierUtils.labelToField(label);
             if (field === undefined) {
               if (SupplierUtils.extraCertIdx(label) < 0 &&
@@ -93,7 +92,7 @@ class ExcelParser
               }
             }
             colFields[col] = field;
-            
+
             if (SupplierUtils.isKeyField(label)) {
               keyColumns.push(col);
             }
@@ -109,7 +108,7 @@ class ExcelParser
               site     = SupplierUtils.createSite();
               currentRow = row;
             }
-            
+
             let label = colLabels[col];
             let field = colFields[col];
 
@@ -130,7 +129,13 @@ class ExcelParser
               }
             }
             else if (SupplierUtils.isFishScoreField(field)) {
-              site[field] = SupplierUtils.parseFishScore(worksheet[z].v);
+              try {
+                site[field] = SupplierUtils.parseFishScore(worksheet[z].v);
+              }
+              catch (e) {
+                cb({msg : e});
+                return;
+              }
             }
             else if (SupplierUtils.extraCertIdx(label) > -1) {
               let value = getCellValue(worksheet[z]);
@@ -162,7 +167,7 @@ class ExcelParser
                   xData = {criterion : label, info : value}
                   site.extraData1.push(xData);
                 }
-                
+
               }
             }
             else if (SupplierUtils.extraData2Idx(label) > -1) {
@@ -204,7 +209,7 @@ class ExcelParser
           supplier.sites = [];
         }
         supplier.sites.push(site);
-        
+
         let result = []
         Object.keys(records).forEach((key, idx) => {
           result.push(records[key]);
@@ -352,7 +357,7 @@ class AddSupplierCtrl
             else {
               this.failReason = "Unknown error";
             }
-            
+
             this.timer(() => {
               angular.element('#opStatusModal').modal('show');
             }, 0);
@@ -366,7 +371,7 @@ class AddSupplierCtrl
           }
         })
       }
-    })
+    });
   }
   
   submit() {
