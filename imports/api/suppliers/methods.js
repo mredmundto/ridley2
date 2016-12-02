@@ -750,6 +750,19 @@ function catchMethodStats() {
   return result;
 }
 
+function willExpireCerts() {
+  let date = new Date();
+  date.setUTCHours(0);
+  date.setUTCMinutes(0);
+  date.setUTCSeconds(0);
+  date.setUTCDate(date.getUTCDate() + 90);
+  
+  let query = {sites : {
+    $elemMatch : {certExpiry : {$lte : date}}
+  }};
+  return Suppliers.find(query).fetch();
+}
+
 if (Meteor.isServer) {
   Meteor.methods({
     scoreStats, certStats, ascStats, catchMethodStats, 
@@ -757,6 +770,6 @@ if (Meteor.isServer) {
     getSupplier, findSuppliersByName, findSuppliersByScore,
     findSuppliersByCertificate, findSuppliersByAsc,
     findSuppliersByCaptureMethod, findSuppliersByMaterial,
-    exportData, setSupplierActive
+    exportData, setSupplierActive, willExpireCerts
   });
 }

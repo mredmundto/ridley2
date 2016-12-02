@@ -5,7 +5,8 @@ import templateUrl from './graph.html';
 class GraphCtrl
 {
   constructor($scope, $state, $reactive) {
-    this.router = $state;
+    this.router        = $state;
+    this.expiringCerts = [];
     $reactive(this).attach($scope);
   }
   
@@ -112,6 +113,12 @@ class GraphCtrl
     this.draw('by ASC');
     this.draw('by Certificate');
     this.draw('by Method');
+    this.call('willExpireCerts', (error, result) =>
+    {
+      if (result) {
+        this.expiringCerts = result;
+      }
+    });
   }
 }
 

@@ -155,6 +155,10 @@ let extraInfo2 = [
   "<1 DAWR Issue in previous 12 months customs/import"
 ];
   
+let dateFields = [
+  'certExpiry'
+];
+  
 export const SupplierUtils =
 {
   getAllLabels : () => {
@@ -237,6 +241,10 @@ export const SupplierUtils =
   
   isFishScoreField : (field) => {
     return (fishScoreFields.indexOf(field) > -1);
+  },
+  
+  isDateField : (field) => {
+    return (dateFields.indexOf(field) > -1);
   },
   
   extraCertIdx : (cert) => {

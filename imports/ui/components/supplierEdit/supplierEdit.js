@@ -5,6 +5,7 @@ import templateUrl from './supplierEdit.html';
 import { SupplierUtils } from '../supplier/supplierUtils.js';
 import { name as linkText } from '../linkText/linkText';
 import { name as linkModal } from '../linkText/linkModal';
+import { name as inputDate } from '../inputDate/inputDate';
 import { name as inputText } from '../inputText/inputText';
 import { name as inputChoice } from '../inputChoice/inputChoice';
 
@@ -188,7 +189,7 @@ class EditSupplierCtrl
 }
 
 export default angular.module('SupplierEdit', [
-  angularMeteor, linkText, linkModal, inputText, inputChoice
+  angularMeteor, linkText, linkModal, inputDate, inputText, inputChoice
 ])
 .component('supplierEdit',
 {

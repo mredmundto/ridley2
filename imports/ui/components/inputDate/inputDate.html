@@ -1,0 +1,9 @@
+<div class='has-feedback' ng-class="{'has-error' : field.$invalid}">
+  <label class='control-label' for='{{name}}'>{{label}}</label>
+  <input type='date' id='{{name}}' name='{{name}}' ng-model="model"
+         placeholder="{{readonly ? model : 'yyyy-MM-dd'}}" check-date
+         class='form-control' ng-required='required' ng-readonly='readonly'>
+  <span ng-show='field.$invalid'
+        class="glyphicon glyphicon-remove form-control-feedback"></span>
+  <span id="helpBlock" class="help-block">Date Formaat : yyyy-MM-dd</span>
+</div>

@@ -35,7 +35,7 @@
       Edit <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
     </button>
     <button class="btn btn-default col-md-1" ng-click="$ctrl.submit()"
-            ng-hide="$ctrl.readonly">
+            ng-hide="$ctrl.readonly" ng-disabled="editForm.$invalid">
       Update <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
     </button>
     <button class="btn btn-default col-md-1" ng-click="$ctrl.cancelEdit()" ng-hide="$ctrl.readonly">
@@ -45,32 +45,32 @@
   <div class='row'>
     <input-text class='col-md-4 form-group' required='true' name="company"
                 label="Company / Supplier" placeholder="Company / Supplier" 
-                model="$ctrl.supplier.company" field='createForm.company'
+                model="$ctrl.supplier.company" field='editForm.company'
                 readonly="true"></input-text>
     <link-text class='col-md-4 form-group' name='companyWebsite'
                 label='Company Website' placeholder='Company Website'
                 txt-model="$ctrl.supplier.companyWebsite.text"
                 url-model="$ctrl.supplier.companyWebsite.url"
-                field='createForm.companyWebsite'
+                field='editForm.companyWebsite'
                 action="$ctrl.openLinkModal(url, callback)"
                 readonly='$ctrl.readonly'></link-text>
     <input-text class='col-md-4 form-group' name='companyCertificate'
                 label='Company Certificates' placeholder='Company Certificates'
-                model="$ctrl.supplier.companyCertificate" field='createForm.companyCertificate'
+                model="$ctrl.supplier.companyCertificate" field='editForm.companyCertificate'
                 readonly='$ctrl.readonly'></input-text>
   </div>
   <div class='row extra-bottom-padding'>
     <input-text class='col-md-4 form-group' required='true' name="materials" 
                 label="Materials" placeholder="Materials"
-                model="$ctrl.supplier.materials" field='createForm.materials'
+                model="$ctrl.supplier.materials" field='editForm.materials'
                 readonly='$ctrl.readonly'></input-text>
     <input-text class='col-md-4 form-group' required='true' name='productCode'
                 label='Product Code' placeholder='Product Code' 
-                model="$ctrl.supplier.productCode" field='createForm.productCode'
+                model="$ctrl.supplier.productCode" field='editForm.productCode'
                 readonly='$ctrl.readonly'></input-text>
     <input-text class='col-md-4 form-group' required='true' name='countryOfOrigin'
                 label='Country Of Origin' placeholder='Country Of Origin'
-                model="$ctrl.supplier.countryOfOrigin" field='createForm.countryOfOrigin'
+                model="$ctrl.supplier.countryOfOrigin" field='editForm.countryOfOrigin'
                 readonly='$ctrl.readonly'></input-text>
   </div>
   <div class='row extra-bottom-padding'>
@@ -78,7 +78,7 @@
                label='SANIPES Website' placeholder='SANIPES Website'
                txt-model="$ctrl.supplier.sanipesWebsite.text"
                url-model="$ctrl.supplier.sanipesWebsite.url"
-               field='createForm.sanipesWebsite'
+               field='editForm.sanipesWebsite'
                action="$ctrl.openLinkModal(url, callback)"
                readonly='$ctrl.readonly'></link-text>
   </div>
@@ -123,58 +123,58 @@
                   <option value='RTRS'>RTRS</option>
                 </select>
               </div>
-              <input-text class='col-md-4 form-group' name='expiryDates'
-                          label='MSC/IFFO/ASC/RTRS Expiry Dates' placeholder='MSC/IFFO/ASC/RTRS Expiry Dates'
-                          model="site.certExpiry" field='createForm.expiryDates'
-                          readonly='$ctrl.readonly'></input-text>
+              <input-date class='col-md-4 form-group' name='expiryDates'
+                          label='MSC/IFFO/ASC/RTRS Expiry Dates'
+                          model="site.certExpiry" field='editForm.expiryDates'
+                          readonly='$ctrl.readonly'></input-date>
               <link-text class='col-md-4 form-group' name='link'
                           label='Link (IFFO/MSC/ASC/RTRS websites)' placeholder='Link (IFFO/MSC/ASC/RTRS websites)'
                           txt-model="site.certLink.text"
                           url-model="site.certLink.url"
-                          field='createForm.link'
+                          field='editForm.link'
                           action="$ctrl.openLinkModal(url, callback)"
                           readonly='$ctrl.readonly'></link-text>
             </div>
             <div class="row">
               <input-text class='col-md-4 form-group' name='fishSpecies'
                   label='Fish Species' placeholder='Fish Species'
-                  model="site.fishSpecies" field='createForm.fishSpecies'></input-text>
+                  model="site.fishSpecies" field='editForm.fishSpecies'></input-text>
               <input-text class='col-md-4 form-group' name='speciesCertification'
                   label='Species Certification' placeholder='Species Certification'
-                  model="site.speciesCertification" field='createForm.speciesCertification'
+                  model="site.speciesCertification" field='editForm.speciesCertification'
                   readonly='$ctrl.readonly'></input-text>
               <input-text class='col-md-4 form-group' name='iucnStatus'
                           label='IUCN status' placeholder='IUCN status'
-                          model="site.iucnStatus" field='createForm.iucnStatus'></input-text>
+                          model="site.iucnStatus" field='editForm.iucnStatus'></input-text>
             </div>
             <div class="row">
               <input-text class='col-md-4 form-group' name='certificatSupplied'
                   label='Ridley Species Certificate Supplied' placeholder='Ridley Species Certificate Supplied'
-                  model="site.certificatSupplied" field='createForm.certificatSupplied'
+                  model="site.certificatSupplied" field='editForm.certificatSupplied'
                   readonly='$ctrl.readonly'></input-text>
               <input-text class='col-md-4 form-group' name='auditRecordSupplied'
                   label='Ridley RS Audit Record Supplied' placeholder='Ridley RS Audit Record Supplied'
-                  model="site.auditRecordSupplied" field='createForm.auditRecordSupplied'
+                  model="site.auditRecordSupplied" field='editForm.auditRecordSupplied'
                   readonly='$ctrl.readonly'></input-text>
               <input-text class='col-md-4 form-group' name='qms' label='QMS' placeholder='QMS' 
-                  model="site.qms" field='createForm.qms' readonly='$ctrl.readonly'></input-text>
+                  model="site.qms" field='editForm.qms' readonly='$ctrl.readonly'></input-text>
             </div>
             <div class="row">
               <input-text class='col-md-4 form-group' name='faoArea'
                   label='FAO area / CCAMLR area' placeholder='FAO area / CCAMLR area'
-                  model="site.faoArea" field='createForm.faoArea' readonly='$ctrl.readonly'></input-text>
+                  model="site.faoArea" field='editForm.faoArea' readonly='$ctrl.readonly'></input-text>
               <input-text class='col-md-4 form-group' name='faoDesc'
                   label='FAO Description of Location' placeholder='FAO Description of Location'
-                  model="site.faoDesc" field='createForm.faoDesc' readonly='$ctrl.readonly'></input-text>
+                  model="site.faoDesc" field='editForm.faoDesc' readonly='$ctrl.readonly'></input-text>
               <link-text class='col-md-4 form-group' name='faoLink'
                   label='FAO Link' placeholder='FAO Link'
                   txt-model="site.faoLink.text" url-model="site.faoLink.url"
-                  field='createForm.faoLink' readonly='$ctrl.readonly'></input-text>
+                  field='editForm.faoLink' readonly='$ctrl.readonly'></input-text>
             </div>
             <div class="row">
               <input-text class='col-md-4 form-group' name='catchMethod'
                   label='Catching Method' placeholder='Catching Method'
-                  model="site.catchMethod" field='createForm.catchMethod' readonly='$ctrl.readonly'></input-text>
+                  model="site.catchMethod" field='editForm.catchMethod' readonly='$ctrl.readonly'></input-text>
             </div>
             <div class="row">
               <h4 class="section-header"><span class="label label-default">Fish Score</span></h4>
@@ -278,7 +278,7 @@
                     label='FishSource Score Link' placeholder='FishSource Score Link'
                     txt-model="site.fishScoreLink.text"
                     url-model="site.fishScoreLink.url"
-                    field='createForm.fishScoreLink'
+                    field='editForm.fishScoreLink'
                     action="$ctrl.openLinkModal(url, callback)"
                     readonly='$ctrl.readonly'></link-text>
                 </div>
@@ -287,7 +287,7 @@
                     label='Fishbase data' placeholder='Fishbase Data'
                     txt-model="site.fishbaseData.text"
                     url-model="site.fishbaseData.url"
-                    field='createForm.fishbaseData'
+                    field='editForm.fishbaseData'
                     action="$ctrl.openLinkModal(url, callback)"
                     readonly='$ctrl.readonly'></link-text>
                 </div>

@@ -6,21 +6,13 @@ import { SupplierUtils } from '../supplier/supplierUtils.js';
 import { name as uploadBegin } from '../uploadBegin/uploadBegin';
 import { name as linkText } from '../linkText/linkText';
 import { name as linkModal } from '../linkText/linkModal';
+import { name as inputDate } from '../inputDate/inputDate';
 import { name as inputText } from '../inputText/inputText';
 import { name as inputChoice } from '../inputChoice/inputChoice';
 
 
 function getCellValue(cell) {
   if (cell.t === 'n') {
-//    let v = cell.v.toString().trim();
-//    let w = cell.w.trim();
-//    
-//    if (v !== w) {
-//      return getJsDateFromExcel(cell.v);
-//    }
-//    else {
-//      return cell.v;
-//    }
     return cell.w.trim();
   } 
   else {
@@ -41,8 +33,16 @@ function getValueAsLink(cell) {
   return value;
 }
 
-function getJsDateFromExcel(excelDate) {
-	return new Date((excelDate - (25567 + 1))*86400*1000);
+function getCellDateValue(cell) {
+  let value = cell.v;
+  if (value === undefined || value === null) {
+    return '';
+  }
+  
+  if (cell.t !== 'n') {
+    throw 'Invalid date format : ' + cell.w.trim();
+  }
+	return new Date((value - (25567 + 2))*86400*1000);
 }
 
 class ExcelParser
@@ -56,7 +56,7 @@ class ExcelParser
       reader.onload = function(e)
       {
         var data = e.target.result;
-        var workbook = XLSX.read(data, {type:'binary'});
+        var workbook = XLSX.read(data, {type:'binary', cellDates:true, cellDates:true});
 
         var sheetName = workbook.SheetNames[0];
         var worksheet = workbook.Sheets[sheetName];
@@ -188,6 +188,16 @@ class ExcelParser
             }
             else {
               let value = getCellValue(worksheet[z]);
+              if (SupplierUtils.isDateField(field)) {
+                try {
+                  value = getCellDateValue(worksheet[z]);
+                }
+                catch (e) {
+                  cb({msg : e});
+                  return;
+                }
+              }
+              
               if (value) {
                 if (typeof value === 'string' && value.length > 0) {
                   if (SupplierUtils.isLinkField(field)) {
@@ -415,7 +425,7 @@ class AddSupplierCtrl
 }
 
 export default angular.module('SupplierAdd', [
-  angularMeteor, linkText, linkModal, inputText, inputChoice, uploadBegin
+  angularMeteor, linkText, linkModal, inputDate, inputText, inputChoice, uploadBegin
 ])
 .service('ExcelParser', ExcelParser)
 .component('supplierAdd',
