@@ -22,7 +22,7 @@
     <button id='toggleActiveBtn' class="btn btn-default col-md-1" ng-click="$ctrl.toggleActive()"
             ng-disabled="!$ctrl.readonly" ng-class='{disabled : !$ctrl.readonly}'
             data-placement='bottom' data-content='{{$ctrl.message}}' data-html='true'>
-      {{$ctrl.supplier.active ? 'Inactivate ' : 'Activiate '}}
+      {{$ctrl.supplier.active ? 'Deactivate ' : 'Activate '}}
       <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true" 
             ng-hide="!$ctrl.supplier.active"></span>
       <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true" 
