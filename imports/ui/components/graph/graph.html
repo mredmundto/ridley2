@@ -1,4 +1,52 @@
-<div class="col-md-6" ng-init="$ctrl.init()">
+<div class="row" ng-init="$ctrl.init()">
+  <div class="col-md-6">
+    <div class="box">
+      <h3>By ASC</h3>
+      <div id="ascChart"></div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="box">
+      <h3>By Certificate</h3>
+      <div id="certChart"></div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="box">
+      <h3>By Catch Method</h3>
+      <div id="catchMethodChart"></div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div>
+      <h3>Certificates Expiration Notice</h3>
+      <table class="table table-hover" style='overflow-y: scroll; overflow-x: hidden'>
+        <tr>
+          <th>Score</th>
+          <th>Company / Site</th>
+          <th>Expiry Date</th>
+        </tr>
+        <tr ng-if="0" ng-repeat-start="supplier in $ctrl.expiringCerts"></tr>
+        <tr>
+          <td></td>
+          <td>
+            <a ui-sref="home.supplierEdit({'supplierId' : '{{supplier._id}}'})">{{supplier.company}}</a>
+          </td>
+          <td></td>
+        </tr>
+        <tr ng-repeat="site in supplier.sites">
+          <td>{{site.score}}</td>
+          <td class="indent">{{site.siteName}}</td>  
+          <td>{{site.certExpiry | date : 'MMM dd, yyyy' : 'ACST'}}</td>  
+        </tr>
+        <tr ng-if="0" ng-repeat-end></tr>
+      </table>
+    </div>
+  </div>
+</div>
+<!--<div class="col-md-6" ng-init="$ctrl.init()">
   <div class="row">
     <h3>By ASC</h3>
     <div id="ascChart"></div>
@@ -35,4 +83,4 @@
     </tr>
     <tr ng-if="0" ng-repeat-end></tr>
   </table>
-</div>
+</div>-->
