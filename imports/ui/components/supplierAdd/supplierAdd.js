@@ -15,8 +15,11 @@ function getCellValue(cell) {
   if (cell.t === 'n') {
     return cell.w.trim();
   } 
+  else if (cell.t === 'b') {
+    return cell.v;
+  } 
   else {
-    if (cell.v === undefined) {
+    if (cell.v === undefined || cell.v === null) {
       return '';
     }
     else {
@@ -30,6 +33,14 @@ function getValueAsLink(cell) {
   if (cell.l !== undefined && cell.l.Target !== undefined) {
     value.url = cell.l.Target;
   }
+  else {
+    let funcName = cell.v.substr(0, 10);
+    if ('=HYPERLINK' == funcName.toUpperCase()) {
+      let linkInfo = cell.v.substring(10, cell.v.length-1);
+      let parts = linkInfo.split(',');
+      value = {'text' : parts[1], 'url' : parts[0]};
+    }
+  }
   return value;
 }
 
@@ -39,10 +50,21 @@ function getCellDateValue(cell) {
     return '';
   }
   
-  if (cell.t !== 'n') {
+  if (cell.t === 'n') {
+    return new Date((value - (25567 + 2))*86400*1000);
+  }
+  else if (cell.t === 's') {
+    let parts = cell.v.split('/');
+    if (parts.length !== 3) {
+      throw 'Invalid date format : ' + cell.v.trim();
+    }
+    let month = parts[1] - 1;
+    return new Date(parts[2], month, parts[0]);
+  }
+  else {
     throw 'Invalid date format : ' + cell.w.trim();
   }
-	return new Date((value - (25567 + 2))*86400*1000);
+	
 }
 
 class ExcelParser

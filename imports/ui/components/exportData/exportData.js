@@ -154,6 +154,14 @@ function supplierToExcelRow(array, obj) {
         array.push(columns[i]);
       }
     }
+    else if (key === 'certExpiry') {
+      var date = obj[key];
+      var dateTxt = 
+        date.getDate() + '/' + 
+        (date.getMonth()+1) + '/' + 
+        date.getFullYear();
+      array.push(dateTxt);
+    }
     else if (key !== 'score') {
       if (typeof obj[key] === 'object') {
         if (obj[key].url !== undefined) {
@@ -182,6 +190,8 @@ function exportData() {
       let data   = [];
       let labels = SupplierUtils.getAllLabels();
 
+//      var idx = labels.find("Gov\'t Managed");
+//      labels.splice(idx, 1);
       data.push(labels);
       for (let i=0; i < result.length; i++) {
         let row = []
