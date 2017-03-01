@@ -91,7 +91,7 @@
                href="#site{{$index}}" aria-expanded="false" aria-controls="site{{$index}}">
               <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
             </a>
-            <input type="text" value="{{site.siteName}}" class="site-name" ng-readonly='$ctrl.readonly'>
+            <input type="text" value="{{site.siteName}} ({{site.score}})" class="site-name" ng-readonly='$ctrl.readonly'>
             <a class="btn btn-info btn-sm pull-right" role="button" href="#" 
                ng-click="$ctrl.removeSite($index)" ng-hide="$ctrl.readonly">
               <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
