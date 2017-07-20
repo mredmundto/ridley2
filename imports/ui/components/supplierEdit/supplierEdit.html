@@ -54,10 +54,13 @@
                 field='editForm.companyWebsite'
                 action="$ctrl.openLinkModal(url, callback)"
                 readonly='$ctrl.readonly'></link-text>
-    <input-text class='col-md-4 form-group' name='companyCertificate'
+    <link-text class='col-md-4 form-group' name='companyCertificate'
                 label='Company Certificates' placeholder='Company Certificates'
-                model="$ctrl.supplier.companyCertificate" field='editForm.companyCertificate'
-                readonly='$ctrl.readonly'></input-text>
+                txt-model="$ctrl.supplier.companyCertificate.text"
+                url-model="$ctrl.supplier.companyCertificate.url" 
+                field='editForm.companyCertificate'
+                action="$ctrl.openLinkModal(url, callback)"
+                readonly='$ctrl.readonly'></link-text>
   </div>
   <div class='row extra-bottom-padding'>
     <input-text class='col-md-4 form-group' required='true' name="materials" 

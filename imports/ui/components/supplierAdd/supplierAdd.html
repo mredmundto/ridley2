@@ -56,9 +56,12 @@
                url-model="$ctrl.supplier.companyWebsite.url"
                field='createForm.companyWebsite'
                action="$ctrl.openLinkModal(url, callback)"></link-text>
-    <input-text class='col-md-4 form-group' name='companyCertificate'
+    <link-text class='col-md-4 form-group' name='companyCertificate'
                 label='Company Certificates' placeholder='Company Certificates'
-                model="$ctrl.supplier.companyCertificate" field='createForm.companyCertificate'></input-text>
+                txt-model="$ctrl.supplier.companyCertificate.text" 
+                url-model="$ctrl.supplier.companyCertificate.url" 
+                field='createForm.companyCertificate'
+                action="$ctrl.openLinkModal(url, callback)"></link-text>
   </div>
   <div class='row extra-bottom-padding'>
     <input-text class='col-md-4 form-group' required='true' name="materials" 

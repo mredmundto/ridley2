@@ -50,6 +50,7 @@ let fieldMap = {
 let linkFields = [
   'sanipesWebsite',
   'companyWebsite',
+  'certificateWebsite',
   'certLink',
   'faoLink',
   'fishScoreLink',
@@ -179,7 +180,7 @@ export const SupplierUtils =
       'countryOfOrigin'    : '',
       'sanipesWebsite'     : {text : '', url : ''},
       'companyWebsite'     : {text : '', url : ''},
-      'companyCertificate' : '',
+      'companyCertificate' : {text : '', url : ''},
       'sites' : []
     };
   },
@@ -223,7 +224,8 @@ export const SupplierUtils =
     supplier.sanipesWebsite.url  = '';
     supplier.companyWebsite.text = '';
     supplier.companyWebsite.url  = '';
-    supplier.companyCertificate  = '';
+    supplier.companyCertificate.text  = '';
+    supplier.companyCertificate.url  = '';
     supplier.sites               = [];
   },
   
